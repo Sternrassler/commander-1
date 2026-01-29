@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/karstenflache/commander-1/fs"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/karstenflache/commander-1/fs"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 			Width(40).
 			Height(20)
 
-	activePanelStyle = panelStyle.Copy().
+	activePanelStyle = panelStyle.
 				BorderForeground(lipgloss.Color("#FFFF00"))
 
 	selectedStyle = lipgloss.NewStyle().
@@ -133,7 +133,7 @@ func (m model) renderPanel(index int) string {
 	s.WriteString(fmt.Sprintf(" Pfad: %s\n\n", p.path))
 
 	for i, entry := range p.entries {
-		prefix := "  "
+		var prefix string
 		if entry.IsDir {
 			prefix = "📁 "
 		} else {
@@ -146,9 +146,9 @@ func (m model) renderPanel(index int) string {
 		} else {
 			s.WriteString(line + "\n")
 		}
-		
+
 		// Begrenzung der Anzeige auf Panel-Höhe
-		if i > 20 { 
+		if i > 20 {
 			break
 		}
 	}
@@ -163,7 +163,7 @@ func (m model) View() string {
 
 	panels := lipgloss.JoinHorizontal(lipgloss.Top, m.renderPanel(0), m.renderPanel(1))
 	help := "\n Tab: Wechseln | ↑/↓: Navigieren | q: Beenden"
-	
+
 	return lipgloss.JoinVertical(lipgloss.Left, " Commander-1 ", panels, help)
 }
 
