@@ -19,3 +19,18 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 
 - README.md und Projektplan auf Cross-Plattform-Fokus aktualisiert.
 - Code-Refactoring zur Behebung von Linter-Warnungen (SA1019, ineffassign).
+
+### Neu in Version 0.1.1
+
+#### Features
+
+- **Dateioperationen**: Kopieren (c), Verschieben (r), Löschen (d) für Dateien und Verzeichnisse.
+- **Verzeichnis-Rekursion**: CopyDir() und DeleteDir() für rekursives Kopieren/Löschen von Ordnern.
+- **Scrollbalken**: Vertikale Scrollbalken werden automatisch eingeblendet, wenn mehr Dateien als die Panel-Höhe vorhanden sind.
+- **Viewport-Steuerung**: PgUp/PgDn für schnelles Scrollen (10 Zeilen).
+- **Automatisches Scrollen**: Viewport folgt dem Cursor automatisch.
+
+#### Fixes
+
+- Panels werden nach Dateioperationen korrekt neu geladen.
+- Temporäre Tastaturbelegung (c/r/d statt F5/F6/F8) um VSCode-Konflikte zu vermeiden.
