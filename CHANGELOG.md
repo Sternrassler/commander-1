@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-01-31
+
+### Changed
+
+- **Documentation**: All documentation and code comments are now in English
+  only
+- **Project Rules**: Updated .kilocode/rules.md with TDD and Clean Code
+  methodology
+- **Workflow**: Added branch protection rule (no direct push to main)
+- **Infrastructure**: Added .gitignore to prevent package-lock.json issues
+- **Linting**: Fixed all markdown linting errors
+
+### Removed
+
+- Obsolete plan files (deb_package_plan.md, norton_commander_plan.md)
+- package-lock.json (now in .gitignore)
+
+### BREAKING CHANGES
+
+- All documentation is now in English only. German documentation has been
+  removed.
+
 ## [1.2.1] - 2026-01-31
 
 ### Fixed
