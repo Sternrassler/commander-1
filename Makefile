@@ -1,4 +1,4 @@
-.PHONY: all clean linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 package-linux-amd64 package-darwin-arm64 lint lint-go lint-docs install-lint test test-coverage test-fs test-integration
+.PHONY: all clean linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 package-linux-amd64 install-darwin-arm64 lint lint-go lint-docs install-lint test test-coverage test-fs test-integration
 
 GOPATH_BIN := $(shell go env GOPATH)/bin
 
@@ -95,16 +95,11 @@ package-linux-amd64: linux-amd64
 	VERSION=$$(cat VERSION) nfpm pkg --packager deb --config nfpm.yaml --target min-commander-linux-amd64.deb
 	@echo "✓ Linux AMD64 DEB package created: min-commander-linux-amd64.deb"
 
-# macOS ARM64 PKG-Paket (für M1/M2/M3 Macs)
-package-darwin-arm64: darwin-arm64
-	@echo "Creating macOS ARM64 PKG package..."
-	@command -v nfpm >/dev/null 2>&1 || (echo "✗ nfpm not found. Install with: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest" && exit 1)
-	VERSION=$$(cat VERSION) nfpm pkg --packager archlinux --config nfpm-darwin-arm64.yaml --target min-commander-darwin-arm64.pkg
-	@echo "✓ macOS ARM64 PKG package created: min-commander-darwin-arm64.pkg"
+# macOS ARM64 Installation (für M1/M2/M3 Macs)
+install-darwin-arm64: darwin-arm64
+	@echo "Installing macOS ARM64 binary..."
+	sudo cp min-commander-darwin-arm64 /usr/local/bin/min-commander
+	sudo chmod +x /usr/local/bin/min-commander
+	@echo "✓ macOS ARM64 binary installed to /usr/local/bin/min-commander"
 	@echo ""
-	@echo "Installation auf macOS:"
-	@echo "  sudo installer -pkg min-commander-darwin-arm64.pkg -target /"
-	@echo ""
-	@echo "Oder manuell installieren:"
-	@echo "  sudo cp min-commander-darwin-arm64 /usr/local/bin/min-commander"
-	@echo "  sudo chmod +x /usr/local/bin/min-commander"
+	@echo "Programm starten mit: min-commander"

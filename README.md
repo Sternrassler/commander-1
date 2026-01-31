@@ -52,17 +52,12 @@ Download the latest version from the [Release page](https://github.com/sternrass
 #### macOS
 
 ```bash
-# macOS ARM64 (Apple Silicon M1/M2/M3) - Binary
+# macOS ARM64 (Apple Silicon M1/M2/M3)
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
 min-commander-darwin-arm64.gz -o min-commander.gz
 gunzip min-commander.gz
 chmod +x min-commander
 sudo mv min-commander /usr/local/bin/
-
-# macOS ARM64 (Apple Silicon M1/M2/M3) - PKG Installer
-curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
-min-commander_VERSION_darwin_arm64.pkg -o min-commander.pkg
-sudo installer -pkg min-commander.pkg -target /
 
 # macOS x86_64 (Intel)
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
@@ -100,7 +95,7 @@ min-commander_VERSION_arm64.deb -o min-commander.deb
 sudo dpkg -i min-commander.deb
 ```
 
-**Hinweis:** Ersetze `VERSION` mit der aktuellen Versionsnummer (z.B. `1.0.0`).
+**Hinweis für DEB-Pakete:** Ersetze `VERSION` mit der aktuellen Versionsnummer (z.B. `2.0.1`).
 
 ### Build from Source
 

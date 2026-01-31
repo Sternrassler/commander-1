@@ -140,13 +140,6 @@ jobs:
           sed 's/\${ARCH}/arm64/g; s/min-commander-linux-amd64/min-commander-linux-arm64/g' nfpm.yaml > nfpm-linux-arm64.yaml
           nfpm package --config nfpm-linux-arm64.yaml --packager deb --target min-commander_${VERSION}_arm64.deb
 
-      - name: Build .pkg package for macOS ARM64 (M1/M2/M3)
-        env:
-          VERSION: ${{ steps.version.outputs.VERSION }}
-        run: |
-          chmod +x min-commander-darwin-arm64
-          nfpm package --config nfpm-darwin-arm64.yaml --packager archlinux --target min-commander_${VERSION}_darwin_arm64.pkg
-
       - name: Generate Checksums
         run: |
           sha256sum \
@@ -156,7 +149,6 @@ jobs:
             min-commander-darwin-arm64.gz \
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb \
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb \
-            min-commander_${{ steps.version.outputs.VERSION }}_darwin_arm64.pkg \
             > checksums.txt
 
       - name: Create Release
@@ -174,5 +166,4 @@ jobs:
             min-commander-darwin-arm64.gz
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb
-            min-commander_${{ steps.version.outputs.VERSION }}_darwin_arm64.pkg
             checksums.txt
