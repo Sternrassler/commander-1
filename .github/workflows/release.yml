@@ -124,21 +124,28 @@ jobs:
           sudo apt update
           sudo apt install nfpm
 
-      - name: Build .deb package for AMD64
+      - name: Build .deb package for Linux AMD64
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
           chmod +x min-commander-linux-amd64
-          sed 's/\${ARCH}/amd64/g; s/min-commander-linux-amd64/min-commander-linux-amd64/g' nfpm.yaml > nfpm-amd64.yaml
-          nfpm package --config nfpm-amd64.yaml --packager deb --target min-commander_${VERSION}_amd64.deb
+          sed 's/\${ARCH}/amd64/g; s/min-commander-linux-amd64/min-commander-linux-amd64/g' nfpm.yaml > nfpm-linux-amd64.yaml
+          nfpm package --config nfpm-linux-amd64.yaml --packager deb --target min-commander_${VERSION}_amd64.deb
 
-      - name: Build .deb package for ARM64
+      - name: Build .deb package for Linux ARM64
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
           chmod +x min-commander-linux-arm64
-          sed 's/\${ARCH}/arm64/g; s/min-commander-linux-amd64/min-commander-linux-arm64/g' nfpm.yaml > nfpm-arm64.yaml
-          nfpm package --config nfpm-arm64.yaml --packager deb --target min-commander_${VERSION}_arm64.deb
+          sed 's/\${ARCH}/arm64/g; s/min-commander-linux-amd64/min-commander-linux-arm64/g' nfpm.yaml > nfpm-linux-arm64.yaml
+          nfpm package --config nfpm-linux-arm64.yaml --packager deb --target min-commander_${VERSION}_arm64.deb
+
+      - name: Build .pkg package for macOS ARM64 (M1/M2/M3)
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        run: |
+          chmod +x min-commander-darwin-arm64
+          nfpm package --config nfpm-darwin-arm64.yaml --packager archlinux --target min-commander_${VERSION}_darwin_arm64.pkg
 
       - name: Generate Checksums
         run: |
@@ -149,6 +156,7 @@ jobs:
             min-commander-darwin-arm64.gz \
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb \
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb \
+            min-commander_${{ steps.version.outputs.VERSION }}_darwin_arm64.pkg \
             > checksums.txt
 
       - name: Create Release
@@ -166,4 +174,5 @@ jobs:
             min-commander-darwin-arm64.gz
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb
+            min-commander_${{ steps.version.outputs.VERSION }}_darwin_arm64.pkg
             checksums.txt

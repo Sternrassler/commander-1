@@ -49,27 +49,58 @@ brew install sternrassler/tap/min-commander
 
 Download the latest version from the [Release page](https://github.com/sternrassler/commander-1/releases):
 
+#### macOS
+
 ```bash
-# macOS ARM64 (Apple Silicon)
+# macOS ARM64 (Apple Silicon M1/M2/M3) - Binary
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
-min-commander-darwin-arm64 -o min-commander
+min-commander-darwin-arm64.gz -o min-commander.gz
+gunzip min-commander.gz
 chmod +x min-commander
+sudo mv min-commander /usr/local/bin/
+
+# macOS ARM64 (Apple Silicon M1/M2/M3) - PKG Installer
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander_VERSION_darwin_arm64.pkg -o min-commander.pkg
+sudo installer -pkg min-commander.pkg -target /
 
 # macOS x86_64 (Intel)
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
-min-commander-darwin-amd64 -o min-commander
+min-commander-darwin-amd64.gz -o min-commander.gz
+gunzip min-commander.gz
 chmod +x min-commander
-
-# Linux x86_64
-curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
-min-commander-linux-amd64 -o min-commander
-chmod +x min-commander
-
-# Linux ARM64
-curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
-min-commander-linux-arm64 -o min-commander
-chmod +x min-commander
+sudo mv min-commander /usr/local/bin/
 ```
+
+#### Linux
+
+```bash
+# Linux x86_64 - Binary
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander-linux-amd64.gz -o min-commander.gz
+gunzip min-commander.gz
+chmod +x min-commander
+sudo mv min-commander /usr/local/bin/
+
+# Linux x86_64 - DEB Package
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander_VERSION_amd64.deb -o min-commander.deb
+sudo dpkg -i min-commander.deb
+
+# Linux ARM64 - Binary
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander-linux-arm64.gz -o min-commander.gz
+gunzip min-commander.gz
+chmod +x min-commander
+sudo mv min-commander /usr/local/bin/
+
+# Linux ARM64 - DEB Package
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander_VERSION_arm64.deb -o min-commander.deb
+sudo dpkg -i min-commander.deb
+```
+
+**Hinweis:** Ersetze `VERSION` mit der aktuellen Versionsnummer (z.B. `1.0.0`).
 
 ### Build from Source
 
@@ -112,6 +143,8 @@ Available Make targets:
 - `linux-arm64` (aarch64)
 - `darwin-amd64` (macOS x86_64/Intel)
 - `darwin-arm64` (macOS ARM64/Apple Silicon)
+- `package-linux-amd64` (Create DEB package for Linux AMD64)
+- `package-darwin-arm64` (Create PKG package for macOS ARM64)
 - `test` (Run tests)
 - `test-coverage` (Tests with coverage)
 - `test-fs` (fs-tests with coverage)
