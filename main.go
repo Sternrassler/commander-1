@@ -32,8 +32,8 @@ type panel struct {
 	path           string
 	entries        []fs.FileEntry
 	cursor         int
-	viewportOffset int  // Für Scrollbalken
-	showHidden     bool // Versteckte Dateien anzeigen
+	viewportOffset int  // For scrollbar
+	showHidden     bool // Show hidden files
 }
 
 type model struct {
@@ -42,12 +42,12 @@ type model struct {
 	width          int
 	height         int
 	err            error
-	statusMsg      string // Für Statusmeldungen
-	viewportOffset int    // Für Scrollen in Panels
+	statusMsg      string // For status messages
+	viewportOffset int    // For scrolling in panels
 }
 
 func (m model) Init() tea.Cmd {
-	// Beide Panels initialisieren
+	// Initialize both panels
 	return tea.Batch(m.readDirCmd(0), m.readDirCmd(1))
 }
 
@@ -90,7 +90,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.err = msg.err
 		} else {
 			m.panels[msg.index].entries = msg.entries
-			// Cursor auf gültigen Wert begrenzen
+			// Limit cursor to valid value
 			if m.panels[msg.index].cursor >= len(m.panels[msg.index].entries) {
 				m.panels[msg.index].cursor = max(0, len(m.panels[msg.index].entries)-1)
 			}
@@ -98,10 +98,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case fileOpResultMsg:
 		if msg.err != nil {
-			m.statusMsg = fmt.Sprintf("Fehler bei %s: %v", msg.op, msg.err)
+			m.statusMsg = fmt.Sprintf("Error during %s: %v", msg.op, msg.err)
 		} else {
-			m.statusMsg = fmt.Sprintf("%s erfolgreich: %s", map[string]string{"copy": "Kopiert", "move": "Verschoben", "delete": "Gelöscht"}[msg.op], msg.entryName)
-			// Beide Panels neu lesen
+			m.statusMsg = fmt.Sprintf("%s successful: %s", map[string]string{"copy": "Copied", "move": "Moved", "delete": "Deleted"}[msg.op], msg.entryName)
+			// Refresh both panels
 			return m, tea.Batch(m.readDirCmd(0), m.readDirCmd(1))
 		}
 		return m, nil
@@ -117,7 +117,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up":
 			if p.cursor > 0 {
 				p.cursor--
-				// Überspringe versteckte Einträge beim Hochscrollen
+				// Skip hidden entries when scrolling up
 				for p.cursor > 0 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
 					p.cursor--
 				}
@@ -125,20 +125,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "down":
 			if p.cursor < len(p.entries)-1 {
 				p.cursor++
-				// Überspringe versteckte Einträge beim Runterscrollen
+				// Skip hidden entries when scrolling down
 				for p.cursor < len(p.entries) && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
 					p.cursor++
 				}
 			}
 		case "pgup":
 			p.cursor = max(0, p.cursor-10)
-			// Überspringe versteckte Einträge
+			// Skip hidden entries
 			for p.cursor > 0 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
 				p.cursor--
 			}
 		case "pgdown":
 			p.cursor = min(len(p.entries)-1, p.cursor+10)
-			// Überspringe versteckte Einträge
+			// Skip hidden entries
 			for p.cursor < len(p.entries)-1 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
 				p.cursor++
 			}
@@ -156,30 +156,30 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			p.cursor = 0
 			return m, m.readDirCmd(m.activePanel)
 
-			// Dateioperationen (temporäre Tasten, um VSCode-Konflikte zu vermeiden)
-		case "c": // Kopieren (statt F5)
+			// File operations (temporary keys to avoid VSCode conflicts)
+		case "c": // Copy (instead of F5)
 			return m, m.handleFileOperation("copy")
-		case "r": // Verschieben (statt F6)
+		case "r": // Move (instead of F6)
 			return m, m.handleFileOperation("move")
-		case "d": // Löschen (statt F8)
+		case "d": // Delete (instead of F8)
 			return m, m.handleFileOperation("delete")
 
-			// Versteckte Dateien umschalten
+			// Toggle hidden files
 		case "h":
 			p.showHidden = !p.showHidden
-			m.statusMsg = fmt.Sprintf("Versteckte Dateien: %s", map[bool]string{true: "AN", false: "AUS"}[p.showHidden])
+			m.statusMsg = fmt.Sprintf("Hidden files: %s", map[bool]string{true: "ON", false: "OFF"}[p.showHidden])
 		}
 	}
 	return m, nil
 }
 
-// handleFileOperation behandelt Dateioperationen (Kopieren, Verschieben, Löschen)
+// handleFileOperation handles file operations (copy, move, delete)
 func (m *model) handleFileOperation(op string) tea.Cmd {
 	p := &m.panels[m.activePanel]
 	inactivePanel := &m.panels[(m.activePanel+1)%2]
 
 	if len(p.entries) == 0 {
-		m.statusMsg = "Keine Datei ausgewählt"
+		m.statusMsg = "No file selected"
 		return nil
 	}
 
@@ -189,14 +189,14 @@ func (m *model) handleFileOperation(op string) tea.Cmd {
 
 	switch op {
 	case "copy":
-		m.statusMsg = fmt.Sprintf("Kopiere: %s -> %s", entry.Name, inactivePanel.path)
+		m.statusMsg = fmt.Sprintf("Copying: %s -> %s", entry.Name, inactivePanel.path)
 	case "move":
-		m.statusMsg = fmt.Sprintf("Verschiebe: %s -> %s", entry.Name, inactivePanel.path)
+		m.statusMsg = fmt.Sprintf("Moving: %s -> %s", entry.Name, inactivePanel.path)
 	case "delete":
-		m.statusMsg = fmt.Sprintf("Lösche: %s", entry.Name)
+		m.statusMsg = fmt.Sprintf("Deleting: %s", entry.Name)
 	}
 
-	// Operation asynchron ausführen
+	// Execute operation asynchronously
 	return func() tea.Msg {
 		var err error
 		switch op {
@@ -216,7 +216,7 @@ func (m *model) handleFileOperation(op string) tea.Cmd {
 	}
 }
 
-// fileOpResultMsg wird gesendet, wenn eine Dateioperation abgeschlossen ist
+// fileOpResultMsg is sent when a file operation is completed
 type fileOpResultMsg struct {
 	op                string
 	entryName         string
@@ -248,7 +248,7 @@ func (m model) renderPanel(index int) string {
 		style = activePanelStyle
 	}
 
-	// Sichtbare Einträge filtern
+	// Filter visible entries
 	var visibleEntries []fs.FileEntry
 	for _, entry := range p.entries {
 		if !p.showHidden && strings.HasPrefix(entry.Name, ".") {
@@ -257,17 +257,17 @@ func (m model) renderPanel(index int) string {
 		visibleEntries = append(visibleEntries, entry)
 	}
 
-	// Viewport-Management
-	viewportHeight := 20 // Standard-Höhe
+	// Viewport management
+	viewportHeight := 20 // Default height
 	if style.GetHeight() > 0 {
 		viewportHeight = style.GetHeight()
 	}
 
-	// Cursor-Index auf sichtbare Einträge mappen
+	// Map cursor index to visible entries
 	visibleCursor := 0
 	if len(visibleEntries) > 0 {
 		if p.cursor < len(p.entries) {
-			// Finde die sichtbare Position des Cursors
+			// Find the visible position of the cursor
 			hiddenCount := 0
 			for i := 0; i <= p.cursor && i < len(p.entries); i++ {
 				if !p.showHidden && strings.HasPrefix(p.entries[i].Name, ".") {
@@ -287,7 +287,7 @@ func (m model) renderPanel(index int) string {
 		p.viewportOffset = 0
 	}
 
-	// Viewport-Offset anpassen
+	// Adjust viewport offset
 	if len(visibleEntries) > 0 {
 		if visibleCursor < p.viewportOffset {
 			p.viewportOffset = visibleCursor
@@ -297,7 +297,7 @@ func (m model) renderPanel(index int) string {
 		} else if visibleCursor >= p.viewportOffset+viewportHeight {
 			p.viewportOffset = visibleCursor - viewportHeight + 1
 		}
-		// Viewport-Offset begrenzen
+		// Limit viewport offset
 		if p.viewportOffset > len(visibleEntries)-viewportHeight {
 			p.viewportOffset = len(visibleEntries) - viewportHeight
 		}
@@ -307,13 +307,13 @@ func (m model) renderPanel(index int) string {
 	}
 
 	var s strings.Builder
-	s.WriteString(fmt.Sprintf(" Pfad: %s", p.path))
+	s.WriteString(fmt.Sprintf(" Path: %s", p.path))
 	if p.showHidden {
 		s.WriteString(" (.*)")
 	}
 	s.WriteString("\n")
 
-	// Dateien im Viewport anzeigen
+	// Display files in viewport
 	for i := p.viewportOffset; i < len(visibleEntries) && i < p.viewportOffset+viewportHeight; i++ {
 		entry := visibleEntries[i]
 		var prefix string
@@ -331,7 +331,7 @@ func (m model) renderPanel(index int) string {
 		}
 	}
 
-	// Scrollbalken rendern
+	// Render scrollbar
 	totalEntries := len(visibleEntries)
 	if totalEntries > viewportHeight {
 		scrollBar := m.renderScrollBar(totalEntries, viewportHeight, p.viewportOffset, visibleCursor)
@@ -341,9 +341,9 @@ func (m model) renderPanel(index int) string {
 	return style.Render(s.String())
 }
 
-// renderScrollBar rendert einen vertikalen Scrollbalken
+// renderScrollBar renders a vertical scrollbar
 func (m model) renderScrollBar(total, viewportHeight, viewportOffset, cursor int) string {
-	// Berechnen der Scrollbalken-Position
+	// Calculate scrollbar position
 	if total <= 0 {
 		return ""
 	}
@@ -354,7 +354,7 @@ func (m model) renderScrollBar(total, viewportHeight, viewportOffset, cursor int
 	var bar strings.Builder
 	for i := 0; i < trackHeight; i++ {
 		if i == thumbPosition {
-			bar.WriteString("█") // Scrollbalken-Position
+			bar.WriteString("█") // Scrollbar position
 		} else {
 			bar.WriteString(" ")
 		}
@@ -365,18 +365,18 @@ func (m model) renderScrollBar(total, viewportHeight, viewportOffset, cursor int
 
 func (m model) View() string {
 	if m.err != nil {
-		return fmt.Sprintf("Fehler: %v\nDrücke q zum Beenden", m.err)
+		return fmt.Sprintf("Error: %v\nPress q to quit", m.err)
 	}
 
 	panels := lipgloss.JoinHorizontal(lipgloss.Top, m.renderPanel(0), m.renderPanel(1))
 
-	// Statusmeldung anzeigen
+	// Display status message
 	status := ""
 	if m.statusMsg != "" {
 		status = lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00")).Render(m.statusMsg)
 	}
 
-	help := "\n Tab: Wechseln | ↑/↓: Navigieren | PgUp/PgDn: Scrollen | c: Kopieren | r: Verschieben | d: Löschen | h: Versteckte | q: Beenden"
+	help := "\n Tab: Switch | ↑/↓: Navigate | PgUp/PgDn: Scroll | c: Copy | r: Move | d: Delete | h: Hidden | q: Quit"
 
 	return lipgloss.JoinVertical(lipgloss.Left, " Min Commander ", panels, status, help)
 }
@@ -384,7 +384,7 @@ func (m model) View() string {
 func main() {
 	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("Fehler: %v", err)
+		fmt.Printf("Error: %v", err)
 		os.Exit(1)
 	}
 }

@@ -7,10 +7,10 @@ import (
 )
 
 func TestReadDir(t *testing.T) {
-	// Test mit einem temporären Verzeichnis
+	// Test with a temporary directory
 	tmpDir := t.TempDir()
 
-	// Erstelle einige Dateien und Verzeichnisse
+	// Create einige Dateien und Verzeichnisse
 	testData := []struct {
 		name  string
 		isDir bool
@@ -44,7 +44,7 @@ func TestReadDir(t *testing.T) {
 		t.Errorf("Expected %d entries, got %d", len(testData), len(entries))
 	}
 
-	// Prüfe, dass Verzeichnisse zuerst kommen
+	// Check that Verzeichnisse zuerst kommen
 	if len(entries) >= 2 {
 		if entries[0].IsDir && !entries[1].IsDir {
 			// OK - Verzeichnis kommt zuerst
@@ -53,7 +53,7 @@ func TestReadDir(t *testing.T) {
 		}
 	}
 
-	// Prüfe, dass Dateien alphabetisch sortiert sind
+	// Check that Dateien alphabetisch sortiert sind
 	var fileNames []string
 	for _, entry := range entries {
 		if !entry.IsDir {
@@ -77,20 +77,20 @@ func TestReadDir_NonExistent(t *testing.T) {
 func TestCopy(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quelldatei
+	// Create Quelldatei
 	srcPath := filepath.Join(tmpDir, "source.txt")
 	content := []byte("test content for copy")
 	if err := os.WriteFile(srcPath, content, 0644); err != nil {
 		t.Fatalf("Failed to create source file: %v", err)
 	}
 
-	// Kopiere
+	// Copy
 	dstPath := filepath.Join(tmpDir, "destination.txt")
 	if err := Copy(srcPath, dstPath); err != nil {
 		t.Fatalf("Copy failed: %v", err)
 	}
 
-	// Prüfe, dass die Datei kopiert wurde
+	// Check that die Datei kopiert wurde
 	dstContent, err := os.ReadFile(dstPath)
 	if err != nil {
 		t.Fatalf("Failed to read destination file: %v", err)
@@ -100,7 +100,7 @@ func TestCopy(t *testing.T) {
 		t.Errorf("Copied content does not match. Expected %q, got %q", content, dstContent)
 	}
 
-	// Prüfe, dass die ursprüngliche Datei noch existiert
+	// Check that the original file still exists
 	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
 		t.Error("Source file should still exist after copy")
 	}
@@ -120,20 +120,20 @@ func TestCopy_SourceNotExists(t *testing.T) {
 func TestMove(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quelldatei
+	// Create Quelldatei
 	srcPath := filepath.Join(tmpDir, "source.txt")
 	content := []byte("test content for move")
 	if err := os.WriteFile(srcPath, content, 0644); err != nil {
 		t.Fatalf("Failed to create source file: %v", err)
 	}
 
-	// Verschiebe
+	// Move
 	dstPath := filepath.Join(tmpDir, "destination.txt")
 	if err := Move(srcPath, dstPath); err != nil {
 		t.Fatalf("Move failed: %v", err)
 	}
 
-	// Prüfe, dass die Datei am neuen Ort existiert
+	// Check that die Datei am neuen Ort existiert
 	dstContent, err := os.ReadFile(dstPath)
 	if err != nil {
 		t.Fatalf("Failed to read destination file: %v", err)
@@ -143,7 +143,7 @@ func TestMove(t *testing.T) {
 		t.Errorf("Moved content does not match. Expected %q, got %q", content, dstContent)
 	}
 
-	// Prüfe, dass die ursprüngliche Datei nicht mehr existiert
+	// Check that the original file no longer exists
 	if _, err := os.Stat(srcPath); !os.IsNotExist(err) {
 		t.Error("Source file should not exist after move")
 	}
@@ -152,13 +152,13 @@ func TestMove(t *testing.T) {
 func TestMove_Directory(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quelldatei
+	// Create Quelldatei
 	srcPath := filepath.Join(tmpDir, "source.txt")
 	if err := os.WriteFile(srcPath, []byte("test"), 0644); err != nil {
 		t.Fatalf("Failed to create source file: %v", err)
 	}
 
-	// Verschiebe in neues Verzeichnis
+	// Move in neues Verzeichnis
 	dstPath := filepath.Join(tmpDir, "newdir", "source.txt")
 	if err := os.MkdirAll(filepath.Dir(dstPath), 0755); err != nil {
 		t.Fatalf("Failed to create destination directory: %v", err)
@@ -168,7 +168,7 @@ func TestMove_Directory(t *testing.T) {
 		t.Fatalf("Move failed: %v", err)
 	}
 
-	// Prüfe, dass die Datei am neuen Ort existiert
+	// Check that die Datei am neuen Ort existiert
 	if _, err := os.Stat(dstPath); os.IsNotExist(err) {
 		t.Error("Destination file should exist after move")
 	}
@@ -177,18 +177,18 @@ func TestMove_Directory(t *testing.T) {
 func TestDelete(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Datei
+	// Create Datei
 	filePath := filepath.Join(tmpDir, "to_delete.txt")
 	if err := os.WriteFile(filePath, []byte("test"), 0644); err != nil {
 		t.Fatalf("Failed to create file: %v", err)
 	}
 
-	// Lösche
+	// Delete
 	if err := Delete(filePath); err != nil {
 		t.Fatalf("Delete failed: %v", err)
 	}
 
-	// Prüfe, dass die Datei gelöscht wurde
+	// Check that the file was deleted
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		t.Error("File should not exist after delete")
 	}
@@ -207,13 +207,13 @@ func TestDelete_NonExistent(t *testing.T) {
 func TestCopyDir(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quelldatei
+	// Create Quelldatei
 	srcDir := filepath.Join(tmpDir, "source")
 	if err := os.Mkdir(srcDir, 0755); err != nil {
 		t.Fatalf("Failed to create source directory: %v", err)
 	}
 
-	// Erstelle Dateien und Unterverzeichnisse
+	// Create Dateien und Unterverzeichnisse
 	if err := os.WriteFile(filepath.Join(srcDir, "file1.txt"), []byte("content1"), 0644); err != nil {
 		t.Fatalf("Failed to create file: %v", err)
 	}
@@ -229,18 +229,18 @@ func TestCopyDir(t *testing.T) {
 		t.Fatalf("Failed to create subfile: %v", err)
 	}
 
-	// Kopiere Verzeichnis
+	// Copy Verzeichnis
 	dstDir := filepath.Join(tmpDir, "destination")
 	if err := CopyDir(srcDir, dstDir); err != nil {
 		t.Fatalf("CopyDir failed: %v", err)
 	}
 
-	// Prüfe, dass das Zielverzeichnis existiert
+	// Check that das Zielverzeichnis existiert
 	if _, err := os.Stat(dstDir); os.IsNotExist(err) {
 		t.Error("Destination directory should exist")
 	}
 
-	// Prüfe, dass alle Dateien kopiert wurden
+	// Check that alle Dateien kopiert wurden
 	files := []string{
 		filepath.Join(dstDir, "file1.txt"),
 		filepath.Join(dstDir, "file2.txt"),
@@ -257,7 +257,7 @@ func TestCopyDir(t *testing.T) {
 func TestCopyDir_NotADirectory(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle eine Datei statt eines Verzeichnisses
+	// Create eine Datei statt eines Verzeichnisses
 	filePath := filepath.Join(tmpDir, "notadir")
 	if err := os.WriteFile(filePath, []byte("test"), 0644); err != nil {
 		t.Fatalf("Failed to create file: %v", err)
@@ -272,13 +272,13 @@ func TestCopyDir_NotADirectory(t *testing.T) {
 func TestCopyDir_DestinationExists(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quellverzeichnis
+	// Create Quellverzeichnis
 	srcDir := filepath.Join(tmpDir, "source")
 	if err := os.Mkdir(srcDir, 0755); err != nil {
 		t.Fatalf("Failed to create source directory: %v", err)
 	}
 
-	// Erstelle Zielverzeichnis bereits
+	// Create Zielverzeichnis bereits
 	dstDir := filepath.Join(tmpDir, "destination")
 	if err := os.Mkdir(dstDir, 0755); err != nil {
 		t.Fatalf("Failed to create destination directory: %v", err)
@@ -293,7 +293,7 @@ func TestCopyDir_DestinationExists(t *testing.T) {
 func TestDeleteDir(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Verzeichnis mit Inhalt
+	// Create Verzeichnis mit Inhalt
 	dirPath := filepath.Join(tmpDir, "to_delete")
 	if err := os.Mkdir(dirPath, 0755); err != nil {
 		t.Fatalf("Failed to create directory: %v", err)
@@ -302,12 +302,12 @@ func TestDeleteDir(t *testing.T) {
 		t.Fatalf("Failed to create file: %v", err)
 	}
 
-	// Lösche Verzeichnis rekursiv
+	// Delete Verzeichnis rekursiv
 	if err := DeleteDir(dirPath); err != nil {
 		t.Fatalf("DeleteDir failed: %v", err)
 	}
 
-	// Prüfe, dass das Verzeichnis gelöscht wurde
+	// Check that the directory was deleted
 	if _, err := os.Stat(dirPath); !os.IsNotExist(err) {
 		t.Error("Directory should not exist after DeleteDir")
 	}
@@ -316,7 +316,7 @@ func TestDeleteDir(t *testing.T) {
 func TestReadDirRecursive(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Verzeichnisstruktur
+	// Create Verzeichnisstruktur
 	if err := os.MkdirAll(filepath.Join(tmpDir, "dir1", "subdir1"), 0755); err != nil {
 		t.Fatalf("Failed to create directory structure: %v", err)
 	}
@@ -337,24 +337,24 @@ func TestReadDirRecursive(t *testing.T) {
 		t.Fatalf("Failed to create file: %v", err)
 	}
 
-	// Test mit Tiefe 1 (nur ein Level rekursiv)
+	// Test with Tiefe 1 (nur ein Level rekursiv)
 	entries, err := ReadDirRecursive(tmpDir, 1)
 	if err != nil {
 		t.Fatalf("ReadDirRecursive failed: %v", err)
 	}
 
-	// Erwartet: dir1, dir2, file1.txt (dir1 enthält subdir1, wird nicht gelesen bei depth=1)
+	// Expected: dir1, dir2, file1.txt (dir1 contains subdir1, not read at depth=1)
 	if len(entries) < 3 {
 		t.Errorf("Expected at least 3 entries, got %d", len(entries))
 	}
 
-	// Test mit Tiefe 2 (zwei Level rekursiv)
+	// Test with Tiefe 2 (zwei Level rekursiv)
 	entries, err = ReadDirRecursive(tmpDir, 2)
 	if err != nil {
 		t.Fatalf("ReadDirRecursive failed: %v", err)
 	}
 
-	// Erwartet mehr Einträge bei depth=2
+	// Expected more entries at depth=2
 	if len(entries) < 4 {
 		t.Errorf("Expected at least 4 entries with depth=2, got %d", len(entries))
 	}
@@ -363,7 +363,7 @@ func TestReadDirRecursive(t *testing.T) {
 func TestReadDirRecursive_NoDepth(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Verzeichnisstruktur
+	// Create Verzeichnisstruktur
 	if err := os.MkdirAll(filepath.Join(tmpDir, "dir1", "subdir1"), 0755); err != nil {
 		t.Fatalf("Failed to create directory structure: %v", err)
 	}
@@ -371,13 +371,13 @@ func TestReadDirRecursive_NoDepth(t *testing.T) {
 		t.Fatalf("Failed to create file: %v", err)
 	}
 
-	// Test mit Tiefe 0 (nur das aktuelle Verzeichnis)
+	// Test with Tiefe 0 (nur das aktuelle Verzeichnis)
 	entries, err := ReadDirRecursive(tmpDir, 0)
 	if err != nil {
 		t.Fatalf("ReadDirRecursive failed: %v", err)
 	}
 
-	// Nur das aktuelle Verzeichnis
+	// Only the aktuelle Verzeichnis
 	found := false
 	for _, entry := range entries {
 		if entry.Name == "file1.txt" {

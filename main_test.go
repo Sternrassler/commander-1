@@ -13,20 +13,20 @@ import (
 func TestCopyFile(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Erstelle Quelldatei
+	// Create Quelldatei
 	srcPath := filepath.Join(tmpDir, "source.txt")
 	content := []byte("test content for copy file function")
 	if err := os.WriteFile(srcPath, content, 0644); err != nil {
 		t.Fatalf("Failed to create source file: %v", err)
 	}
 
-	// Kopiere mit copyFile Funktion
+	// Copy mit copyFile Funktion
 	dstPath := filepath.Join(tmpDir, "destination.txt")
 	if err := copyFile(srcPath, dstPath); err != nil {
 		t.Fatalf("copyFile failed: %v", err)
 	}
 
-	// Prüfe, dass die Datei kopiert wurde
+	// Check that die Datei kopiert wurde
 	dstContent, err := os.ReadFile(dstPath)
 	if err != nil {
 		t.Fatalf("Failed to read destination file: %v", err)
@@ -164,19 +164,19 @@ func TestFileOpResultMsg(t *testing.T) {
 func TestRenderScrollBar(t *testing.T) {
 	m := model{width: 800, height: 600}
 
-	// Test mit 0 Einträgen (sollte leer sein)
+	// Test with 0 entries (should be empty)
 	scrollBar := m.renderScrollBar(0, 20, 0, 0)
 	if scrollBar != "" {
 		t.Error("Expected empty scrollbar for 0 entries")
 	}
 
-	// Test mit positiven Einträgen (sollte nicht leer sein)
+	// Test with positive entries (should not be empty)
 	scrollBar = m.renderScrollBar(100, 20, 0, 10)
 	if scrollBar == "" {
 		t.Error("Expected non-empty scrollbar for large content")
 	}
 
-	// Test mit wenigen Einträgen (sollte nicht leer sein, da total > 0)
+	// Test with few entries (should not be empty, since total > 0)
 	scrollBar = m.renderScrollBar(5, 20, 0, 2)
 	if scrollBar == "" {
 		t.Error("Expected non-empty scrollbar for any positive total")
@@ -490,7 +490,7 @@ func TestReadDirCmd(t *testing.T) {
 func TestCopyFileWithDifferentSizes(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Test mit verschiedenen Dateigrößen
+	// Test with different file sizes
 	testCases := []struct {
 		name    string
 		size    int
