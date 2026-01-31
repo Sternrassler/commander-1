@@ -1,6 +1,7 @@
 # Contributing to Min Commander
 
-Thank you for your interest in Min Commander! We welcome contributions from the community.
+Thank you for your interest in Min Commander! We welcome contributions from
+the community.
 
 ## How to Contribute
 
@@ -40,9 +41,10 @@ If you find a bug or have a feature request:
 
 #### Commit Messages
 
-Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+Follow the [Conventional Commits](https://www.conventionalcommits.org/)
+specification:
 
-```
+```text
 <type>[optional scope]: <description>
 
 [optional body]
@@ -51,6 +53,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 ```
 
 **Types:**
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -60,7 +63,8 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 - `chore**: Maintenance tasks
 
 **Examples:**
-```
+
+```text
 feat(fs): Add recursive directory deletion support
 fix: Correct cursor movement when hiding files
 docs: Update installation instructions
@@ -70,10 +74,13 @@ docs: Update installation instructions
 
 - Add tests for new features
 - Ensure all tests pass:
+
   ```bash
   make test
   ```
+
 - Coverage target for fs package: at least 80%
+
   ```bash
   make test-fs
   ```
@@ -96,7 +103,8 @@ docs: Update installation instructions
 
 ### Issue-Driven Development
 
-1. **Create an Issue**: Before making changes, create an issue that describes your change request.
+1. **Create an Issue**: Before making changes, create an issue that describes
+   your change request.
    - Choose a meaningful title
    - Describe the problem or desired feature
    - Explain the expected benefit
@@ -106,30 +114,37 @@ docs: Update installation instructions
    - `bug`: For bug reports and fixes
 
 3. **Work in your own Branch**: Create a branch based on the issue:
+
    ```bash
    git checkout -b feature/issue-123-description   # for Features
    git checkout -b fix/issue-456-description       # for Bugfixes
    ```
 
-4. **Create a Pull Request**: After completion, create a PR against the `main` branch.
-   - PR title should reference the issue (e.g. "feat: Add recursive deletion (#123)")
+4. **Create a Pull Request**: After completion, create a PR against the
+   `main` branch.
+   - PR title should reference the issue
+     (e.g. "feat: Add recursive deletion (#123)")
    - Link the corresponding issue in the PR
 
 ### Clean Code Methodology
 
 Follow the Clean Code principles by Robert C. Martin:
 
-- **SOLID Principles**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
+- **SOLID Principles**: Single Responsibility, Open/Closed, Liskov
+  Substitution, Interface Segregation, Dependency Inversion
 - **KISS**: "Keep It Simple, Stupid" - Keep the code as simple as possible
 - **DRY**: "Don't Repeat Yourself" - Avoid code duplication
-- **YAGNI**: "You Aren't Gonna Need It" - Implement only what is really needed
+- **YAGNI**: "You Aren't Gonna Need It" - Implement only what is really
+  needed
 - **Meaningful Names**: Use descriptive names for variables, functions, and types
-- **Small Functions**: Functions should perform one task and be at most 20-30 lines long
-- **Comments**: Comment only "why", not "what" - the code should be self-explanatory
+- **Small Functions**: Functions should perform one task and be at most
+  20-30 lines long
+- **Comments**: Comment only "why", not "what" - the code should be
+  self-explanatory
 
 ## Project Structure
 
-```
+```text
 commander-1/
 ├── main.go           # Main application and Model
 ├── fs/
@@ -160,6 +175,7 @@ commander-1/
 ## Questions?
 
 For questions you can:
+
 - Create an issue
 - Use Discussions
 - Contact maintainers directly

@@ -30,7 +30,7 @@ func ReadDir(path string) ([]FileEntry, error) {
 		})
 	}
 
-	// Sortierung: Verzeichnisse zuerst, dann alphabetisch
+	// Sort: directories first, then alphabetically
 	sort.Slice(files, func(i, j int) bool {
 		if files[i].IsDir != files[j].IsDir {
 			return files[i].IsDir
@@ -41,7 +41,7 @@ func ReadDir(path string) ([]FileEntry, error) {
 	return files, nil
 }
 
-// Copy kopiert eine Datei von src nach dst
+// Copy copies a file from src to dst
 func Copy(src, dst string) error {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -64,27 +64,27 @@ func Copy(src, dst string) error {
 	return err
 }
 
-// Move verschiebt eine Datei oder ein Verzeichnis von src nach dst
+// Move moves a file or directory from src to dst
 func Move(src, dst string) error {
-	// Versuchen, die Datei umzubenennen (funktioniert nur auf derselben Partition)
+	// Try to rename the file (only works on the same partition)
 	err := os.Rename(src, dst)
 	if err == nil {
 		return nil
 	}
 
-	// Wenn Rename fehlschlägt (z.B. verschiedene Partitionen), dann kopieren und löschen
+	// If rename fails (e.g. different partitions), copy and delete
 	if err := Copy(src, dst); err != nil {
 		return err
 	}
 	return os.Remove(src)
 }
 
-// Delete löscht eine Datei oder ein Verzeichnis
+// Delete deletes a file or directory
 func Delete(path string) error {
 	return os.Remove(path)
 }
 
-// CopyDir kopiert ein Verzeichnis rekursiv
+// CopyDir copies a directory recursively
 func CopyDir(src, dst string) error {
 	srcInfo, err := os.Stat(src)
 	if err != nil {
@@ -128,12 +128,12 @@ func CopyDir(src, dst string) error {
 	return nil
 }
 
-// DeleteDir löscht ein Verzeichnis rekursiv
+// DeleteDir deletes a directory recursively
 func DeleteDir(path string) error {
 	return os.RemoveAll(path)
 }
 
-// ReadDirRecursive liest ein Verzeichnis rekursiv (für zukünftige Nutzung)
+// ReadDirRecursive reads a directory recursively (for future use)
 func ReadDirRecursive(path string, depth int) ([]FileEntry, error) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
@@ -150,7 +150,7 @@ func ReadDirRecursive(path string, depth int) ([]FileEntry, error) {
 			Size:  info.Size(),
 		})
 
-		// Rekursiv für Verzeichnisse (bis zu einer bestimmten Tiefe)
+		// Recursive for directories (up to a certain depth)
 		if isDir && depth > 0 {
 			subEntries, err := ReadDirRecursive(filepath.Join(path, entry.Name()), depth-1)
 			if err != nil {

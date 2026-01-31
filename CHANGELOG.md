@@ -1,102 +1,115 @@
 # Changelog
 
-Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+All notable changes to this project will be documented in this file.
 
-Das Format basiert auf [Conventional Commits](https://www.conventionalcommits.org/) und verwendet [Semantic Versioning](https://semver.org/).
+The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
+and uses [Semantic Versioning](https://semver.org/).
 
 ## [1.2.1] - 2026-01-31
 
 ### Fixed
-- Korrigierte Tastenkürzel in der Man-Page entsprechend der tatsächlichen Implementierung
+
+- Corrected keyboard shortcuts in man page according to actual implementation
 
 ## [1.2.0] - 2026-01-31
 
 ### Added
-- Man-page (manual) für min-commander Befehl
-- Erweiterte Paketbeschreibung mit Hinweis auf Befehlsname
+
+- Man-page (manual) for min-commander command
+- Extended package description with reference to command name
 
 ### Changed
-- Konsistente Benennung aller Release-Artefakte zu 'min-commander-*'
-- Verbesserte Dokumentation im Debian-Paket
 
-### Fixed
-- Fehlende Man-Page für installiertes Paket
+- Consistent naming of all release artifacts to 'min-commander-*'
+- Improved documentation in Debian package
+
+### Removed
+
+- Missing man page for installed package
 
 ## [1.1.0] - 2026-01-31
 
 ### Added
+
 - Debian package (.deb) support for Linux amd64 and arm64 architectures
 - nfpm configuration for package generation
 - Automated .deb package building in release workflow
 
 ### Changed
+
 - Enhanced release workflow to include .deb packages in GitHub releases
 - Improved checksums generation to include all release artifacts
 
 ### Fixed
+
 - Corrected tag_name reference in release workflow to use proper Git tag format
 
 ## [1.0.0] - 2026-01-31
 
 ### Changed
 
-- **Refactoring**: Interne Code-Struktur verbessert und modernisiert
-- **CI-Fixes**: GitHub Actions Workflows stabilisiert und korrigiert
+- **Refactoring**: Improved and modernized internal code structure
+- **CI-Fixes**: Stabilized and corrected GitHub Actions workflows
 
 ### Removed
 
-- **Features**: Veraltete oder nicht mehr unterstützte Funktionen entfernt (Major Release aufgrund von Breaking Changes)
+- **Features**: Removed deprecated or no longer supported features
+  (Major Release due to Breaking Changes)
 
 ## [0.3.0] - 2026-01-31
 
 ### Features
 
-- **Dateioperationen**: Kopieren (c), Verschieben (r), Löschen (d) für Dateien und Verzeichnisse
-- **Verzeichnis-Rekursion**: CopyDir() und DeleteDir() für rekursives Kopieren/Löschen von Ordnern
-- **Scrollbalken**: Vertikale Scrollbalken werden automatisch eingeblendet
-- **Viewport-Steuerung**: PgUp/PgDn für schnelles Scrollen (10 Zeilen)
-- **Automatisches Scrollen**: Viewport folgt dem Cursor automatisch
-- **GitHub Actions CI**: Automatisierte Tests und Linting für alle Plattformen
-- **GitHub Actions Release**: Automatische Release-Erstellung mit Binaries
+- **File Operations**: Copy (c), Move (r), Delete (d) for files and
+  directories
+- **Directory Recursion**: CopyDir() and DeleteDir() for recursive
+  copying/deleting of folders
+- **Scrollbars**: Vertical scrollbars are automatically displayed
+- **Viewport Control**: PgUp/PgDn for fast scrolling (10 lines)
+- **Automatic Scrolling**: Viewport follows cursor automatically
+- **GitHub Actions CI**: Automated tests and linting for all platforms
+- **GitHub Actions Release**: Automatic release creation with binaries
 
 ### Bug Fixes
 
-- Panels werden nach Dateioperationen korrekt neu geladen
-- Temporäre Tastaturbelegung (c/r/d statt F5/F6/F8) um VSCode-Konflikte zu vermeiden
+- Panels are correctly reloaded after file operations
+- Temporary key bindings (c/r/d instead of F5/F6/F8) to avoid VSCode
+  conflicts
 
 ## [0.2.0] - 2026-01-29
 
 ### Features
 
-- **Versteckte Dateien**: Toggle mit 'h' um versteckte Dateien anzuzeigen/auszublenden
-- **Datei-Anzeige**: Datei-Viewer mit 'v' oder 'F3'
-  - Textdateien: Zeilenweise Anzeige
-  - Bilder: Öffnen mit externem Betrachter (xdg-open)
-  - Binärdateien: Hexdump-Anzeige
-- **Rekursive Dateisuche**: '/' für Wildcard-Suche (* und ?) mit Pfadangabe
-  - Case-insensitive Matching
-  - Eigene Suchergebnis-View
-  - ENTER öffnet Dateien/Verzeichnisse aus Ergebnissen
+- **Hidden Files**: Toggle with 'h' to show/hide hidden files
+- **File Viewer**: File viewer with 'v' or 'F3'
+  - Text files: Line-by-line display
+  - Images: Open with external viewer (xdg-open)
+  - Binary files: Hexdump display
+- **Recursive File Search**: '/' for wildcard search (* and ?) with path
+  specification
+  - Case-insensitive matching
+  - Dedicated search results view
+  - ENTER opens files/directories from results
 
 ### Changed
 
-- Beide Panels werden bei Programmstart initialisiert
-- Navigation überspringt versteckte Dateien wenn showHidden=false
+- Both panels are initialized at program start
+- Navigation skips hidden files when showHidden=false
 
 ## [0.1.0] - 2026-01-29
 
 ### Features
 
-- Initiales Projekt-Setup mit Go und Bubbletea
-- Zwei-Panel-Layout mit dynamischer Größenanpassung
-- Dateisystem-Navigation (Pfeiltasten, Tab, Enter, Backspace)
-- GitHub Repository Integration unter `sternrassler/commander-1`
-- Projekt-spezifische Regeln und Richtlinien
-- Linux-Unterstützung (x86_64, ARM64) und Cross-Compilation Makefile
-- Architecture Decision Record (ADR-0001) für Plattform-Support
-- Linting-Infrastruktur für Go und Markdown
+- Initial project setup with Go and Bubbletea
+- Dual-panel layout with dynamic resizing
+- File system navigation (arrow keys, Tab, Enter, Backspace)
+- GitHub repository integration under `sternrassler/commander-1`
+- Project-specific rules and guidelines
+- Linux support (x86_64, ARM64) and cross-compilation Makefile
+- Architecture Decision Record (ADR-0001) for platform support
+- Linting infrastructure for Go and Markdown
 
 ### Changed
 
-- README.md und Projektplan auf Cross-Plattform-Fokus aktualisiert
-- Code-Refactoring zur Behebung von Linter-Warnungen (SA1019, ineffassign)
+- Updated README.md and project plan to cross-platform focus
+- Code refactoring to fix linter warnings (SA1019, ineffassign)
