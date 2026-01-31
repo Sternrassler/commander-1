@@ -4,6 +4,19 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 
 Das Format basiert auf [Conventional Commits](https://www.conventionalcommits.org/) und verwendet [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-01-31
+
+### Added
+- Man-page (manual) für min-commander Befehl
+- Erweiterte Paketbeschreibung mit Hinweis auf Befehlsname
+
+### Changed
+- Konsistente Benennung aller Release-Artefakte zu 'min-commander-*'
+- Verbesserte Dokumentation im Debian-Paket
+
+### Fixed
+- Fehlende Man-Page für installiertes Paket
+
 ## [1.1.0] - 2026-01-31
 
 ### Added

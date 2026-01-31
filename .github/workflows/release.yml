@@ -100,23 +100,23 @@ jobs:
 
       - name: Build Linux AMD64
         run: |
-          GOOS=linux GOARCH=amd64 go build -o commander-1-linux-amd64 .
-          gzip -k commander-1-linux-amd64
+          GOOS=linux GOARCH=amd64 go build -o min-commander-linux-amd64 .
+          gzip -k min-commander-linux-amd64
 
       - name: Build Linux ARM64
         run: |
-          GOOS=linux GOARCH=arm64 go build -o commander-1-linux-arm64 .
-          gzip -k commander-1-linux-arm64
+          GOOS=linux GOARCH=arm64 go build -o min-commander-linux-arm64 .
+          gzip -k min-commander-linux-arm64
 
       - name: Build macOS AMD64
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o commander-1-darwin-amd64 .
-          gzip -k commander-1-darwin-amd64
+          GOOS=darwin GOARCH=amd64 go build -o min-commander-darwin-amd64 .
+          gzip -k min-commander-darwin-amd64
 
       - name: Build macOS ARM64
         run: |
-          GOOS=darwin GOARCH=arm64 go build -o commander-1-darwin-arm64 .
-          gzip -k commander-1-darwin-arm64
+          GOOS=darwin GOARCH=arm64 go build -o min-commander-darwin-arm64 .
+          gzip -k min-commander-darwin-arm64
 
       - name: Install nfpm
         run: |
@@ -128,9 +128,7 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
-          cp commander-1-linux-amd64 min-commander-linux-amd64
           chmod +x min-commander-linux-amd64
-          # Erstelle temporäre nfpm.yaml für amd64
           sed 's/\${ARCH}/amd64/g; s/min-commander-linux-amd64/min-commander-linux-amd64/g' nfpm.yaml > nfpm-amd64.yaml
           nfpm package --config nfpm-amd64.yaml --packager deb --target min-commander_${VERSION}_amd64.deb
 
@@ -138,19 +136,17 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
-          cp commander-1-linux-arm64 min-commander-linux-arm64
           chmod +x min-commander-linux-arm64
-          # Erstelle temporäre nfpm.yaml für arm64
           sed 's/\${ARCH}/arm64/g; s/min-commander-linux-amd64/min-commander-linux-arm64/g' nfpm.yaml > nfpm-arm64.yaml
           nfpm package --config nfpm-arm64.yaml --packager deb --target min-commander_${VERSION}_arm64.deb
 
       - name: Generate Checksums
         run: |
           sha256sum \
-            commander-1-linux-amd64.gz \
-            commander-1-linux-arm64.gz \
-            commander-1-darwin-amd64.gz \
-            commander-1-darwin-arm64.gz \
+            min-commander-linux-amd64.gz \
+            min-commander-linux-arm64.gz \
+            min-commander-darwin-amd64.gz \
+            min-commander-darwin-arm64.gz \
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb \
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb \
             > checksums.txt
@@ -164,10 +160,10 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            commander-1-linux-amd64.gz
-            commander-1-linux-arm64.gz
-            commander-1-darwin-amd64.gz
-            commander-1-darwin-arm64.gz
+            min-commander-linux-amd64.gz
+            min-commander-linux-arm64.gz
+            min-commander-darwin-amd64.gz
+            min-commander-darwin-arm64.gz
             min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb
             min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb
             checksums.txt
