@@ -4,6 +4,17 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 
 Das Format basiert auf [Conventional Commits](https://www.conventionalcommits.org/) und verwendet [Semantic Versioning](https://semver.org/).
 
+## [1.0.0] - 2026-01-31
+
+### Changed
+
+- **Refactoring**: Interne Code-Struktur verbessert und modernisiert
+- **CI-Fixes**: GitHub Actions Workflows stabilisiert und korrigiert
+
+### Removed
+
+- **Features**: Veraltete oder nicht mehr unterstützte Funktionen entfernt (Major Release aufgrund von Breaking Changes)
+
 ## [0.3.0] - 2026-01-31
 
 ### Features
