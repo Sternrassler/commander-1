@@ -119,9 +119,10 @@ jobs:
           gzip -k commander-1-darwin-arm64
 
       - name: Install nfpm
-        uses: goreleaser/nfpm-action@v1
-        with:
-          version: latest
+        run: |
+          echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | sudo tee /etc/apt/sources.list.d/goreleaser.list
+          sudo apt update
+          sudo apt install nfpm
 
       - name: Build .deb package for AMD64
         env:
