@@ -1,4 +1,4 @@
-.PHONY: all clean linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 lint lint-go lint-docs install-lint
+.PHONY: all clean linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 lint lint-go lint-docs install-lint test test-coverage test-fs test-integration
 
 GOPATH_BIN := $(shell go env GOPATH)/bin
 
@@ -8,32 +8,58 @@ all: linux-amd64 linux-arm64 darwin-amd64 darwin-arm64
 # Linux AMD64 (x86_64)
 linux-amd64:
 	@echo "Building for linux-amd64..."
-	GOOS=linux GOARCH=amd64 go build -o commander-1-linux-amd64 . && \
+	GOOS=linux GOARCH=amd64 go build -o min-commander-linux-amd64 . && \
 	@echo "✓ linux-amd64 build complete" || (echo "✗ linux-amd64 build failed" && exit 1)
 
 # Linux ARM64 (aarch64)
 linux-arm64:
 	@echo "Building for linux-arm64..."
-	GOOS=linux GOARCH=arm64 go build -o commander-1-linux-arm64 . && \
+	GOOS=linux GOARCH=arm64 go build -o min-commander-linux-arm64 . && \
 	@echo "✓ linux-arm64 build complete" || (echo "✗ linux-arm64 build failed" && exit 1)
 
 # macOS AMD64 (Intel)
 darwin-amd64:
 	@echo "Building for darwin-amd64..."
-	GOOS=darwin GOARCH=amd64 go build -o commander-1-darwin-amd64 . && \
+	GOOS=darwin GOARCH=amd64 go build -o min-commander-darwin-amd64 . && \
 	@echo "✓ darwin-amd64 build complete" || (echo "✗ darwin-amd64 build failed" && exit 1)
 
 # macOS ARM64 (Apple Silicon)
 darwin-arm64:
 	@echo "Building for darwin-arm64..."
-	GOOS=darwin GOARCH=arm64 go build -o commander-1-darwin-arm64 . && \
+	GOOS=darwin GOARCH=arm64 go build -o min-commander-darwin-arm64 . && \
 	@echo "✓ darwin-arm64 build complete" || (echo "✗ darwin-arm64 build failed" && exit 1)
 
 # Clean build artifacts
 clean:
 	@echo "Cleaning build artifacts..."
-	rm -f commander-1-linux-amd64 commander-1-linux-arm64 commander-1-darwin-amd64 commander-1-darwin-arm64
+	rm -f min-commander-linux-amd64 min-commander-linux-arm64 min-commander-darwin-amd64 min-commander-darwin-arm64 coverage.out
 	@echo "✓ Clean complete"
+
+# Tests ausführen
+test:
+	@echo "Running all tests..."
+	go test -v ./...
+	@echo "✓ All tests complete"
+
+# Tests mit Coverage ausführen
+test-coverage:
+	@echo "Running tests with coverage..."
+	go test -v -coverprofile=coverage.out ./...
+	go tool cover -func=coverage.out
+	@echo "✓ Coverage report complete"
+
+# Nur fs-Tests ausführen (Coverage-Ziel: 80%+)
+test-fs:
+	@echo "Running fs package tests..."
+	go test -v -coverprofile=coverage-fs.out ./fs
+	go tool cover -func=coverage-fs.out
+	@echo "✓ fs tests complete"
+
+# Integrationstests ausführen
+test-integration:
+	@echo "Running integration tests..."
+	go test -v -run TestIntegration .
+	@echo "✓ Integration tests complete"
 
 # Linting
 

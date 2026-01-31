@@ -1,15 +1,78 @@
-# Commander-1
+# Min Commander
 
-Commander-1 ist eine moderne, tastaturgesteuerte Terminal-Alternative zum
-macOS Finder, inspiriert vom klassischen Norton Commander.
+Min Commander ist ein moderner, tastaturgesteuerter Terminal-Dateimanager als Alternative zum macOS Finder, inspiriert vom klassischen Norton Commander.
 
 ## Features
 
-- **Zwei-Panel-Layout:** Effizientes Arbeiten in zwei Verzeichnissen
-  gleichzeitig.
-- **TUI (Terminal User Interface):** Schnell, leichtgewichtig und komplett
-  tastaturgesteuert.
-- **Cross-Plattform:** Optimiert für macOS und Linux.
+- **Zwei-Panel-Layout**: Effizientes Arbeiten in zwei Verzeichnissen gleichzeitig
+- **TUI (Terminal User Interface)**: Schnell, leichtgewichtig und vollständig tastaturgesteuert
+- **Cross-Platform**: Optimiert für macOS und Linux
+
+### Dateioperationen
+
+- **c**: Datei/Verzeichnis kopieren
+- **r**: Datei/Verzeichnis verschieben
+- **d**: Datei/Verzeichnis löschen
+
+### Navigation
+
+- **↑/↓**: Durch die Dateiliste navigieren
+- **PgUp/PgDn**: Schnelles Scrollen (10 Zeilen)
+- **Tab**: Zwischen linkem und rechtem Panel wechseln
+- **Enter**: Verzeichnis öffnen
+- **Backspace**: Zum übergeordneten Verzeichnis wechseln
+- **h**: Versteckte Dateien anzeigen/ausblenden
+
+### Dateibetrachter
+
+- **v** oder **F3**: Datei anzeigen
+  - Textdateien: Zeilenweise Anzeige
+  - Bilder: Öffnen mit externem Betrachter
+  - Binärdateien: Hexdump-Anzeige
+
+### Dateisuche
+
+- **/**: Wildcard-Suche (* und ?) mit Pfadangabe
+  - Case-insensitive Matching
+  - ENTER öffnet Dateien/Verzeichnisse aus Ergebnissen
+
+## Installation
+
+### Homebrew (macOS)
+
+```bash
+brew install sternrassler/tap/min-commander
+```
+
+### Direkter Download
+
+Laden Sie die neueste Version von der [Release-Seite](https://github.com/sternrassler/commander-1/releases) herunter:
+
+```bash
+# macOS ARM64 (Apple Silicon)
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/min-commander-darwin-arm64 -o min-commander
+chmod +x min-commander
+
+# macOS x86_64 (Intel)
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/min-commander-darwin-amd64 -o min-commander
+chmod +x min-commander
+
+# Linux x86_64
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/min-commander-linux-amd64 -o min-commander
+chmod +x min-commander
+
+# Linux ARM64
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/min-commander-linux-arm64 -o min-commander
+chmod +x min-commander
+```
+
+### Von der Quelle bauen
+
+```bash
+git clone https://github.com/sternrassler/commander-1.git
+cd commander-1
+go build -o min-commander .
+```
 
 ## Unterstützte Plattformen
 
@@ -18,11 +81,11 @@ macOS Finder, inspiriert vom klassischen Norton Commander.
 
 ## Build
 
-Stelle sicher, dass Go installiert ist.
+Stellen Sie sicher, dass Go installiert ist.
 
 ### Build mit Make
 
-Das Projekt enthält ein Makefile für die Cross-Compilation:
+Das Projekt enthält ein Makefile für Cross-Compilation:
 
 ```bash
 # Alle Plattformen bauen
@@ -34,65 +97,73 @@ make linux-arm64
 make darwin-amd64
 make darwin-arm64
 
-# Build-Artefakte aufräumen
+# Build-Artefakte bereinigen
 make clean
 ```
 
-Unterstützte Make-Targets:
+Verfügbare Make Targets:
 
 - `linux-amd64` (x86_64)
 - `linux-arm64` (aarch64)
 - `darwin-amd64` (macOS x86_64/Intel)
 - `darwin-arm64` (macOS ARM64/Apple Silicon)
-- `lint` (Code und Docs linten)
-- `lint-go` (nur Go-Code linten)
-- `lint-docs` (nur Docs linten)
-- `install-lint` (Linting-Tools installieren)
+- `test` (Tests ausführen)
+- `test-coverage` (Tests mit Coverage)
+- `test-fs` (fs-tests mit Coverage)
+- `test-integration` (Integration tests)
+- `lint` (Code und Docs Linting)
+- `lint-go` (Nur Go Code)
+- `lint-docs` (Nur Docs)
+- `install-lint` (Linting Tools installieren)
 
 ### Linting
 
 Code-Qualität und Dokumentation werden mit Linting-Tools geprüft:
 
 ```bash
-# Linting-Tools installieren
+# Linting Tools installieren
 make install-lint
 
 # Alle Lints ausführen (Code + Docs)
 make lint
 
-# Nur Go-Code linten
+# Nur Go Code
 make lint-go
 
-# Nur Dokumentation linten
+# Nur Docs
 make lint-docs
-```
-
-### Lokaler Build (alle Plattformen)
-
-Mit Go kannst du direkt für deine aktuelle Plattform bauen:
-
-```bash
-go run main.go
-```
-
-Oder für macOS kompilieren:
-
-```bash
-# macOS ARM64 (Apple Silicon)
-GOOS=darwin GOARCH=arm64 go build -o commander-1-darwin-arm64 .
-
-# macOS x86_64 (Intel)
-GOOS=darwin GOARCH=amd64 go build -o commander-1-darwin-amd64 .
 ```
 
 ## Steuerung
 
-- **Pfeiltasten (↑/↓):** Navigieren durch die Dateiliste.
-- **Tab / Pfeiltasten (←/→):** Wechseln zwischen linkem und rechtem Panel.
-- **Enter:** Verzeichnis öffnen.
-- **Backspace:** In das übergeordnete Verzeichnis wechseln.
-- **q / Ctrl+C:** Beenden.
+- **Pfeiltasten (↑/↓):** Durch die Dateiliste navigieren
+- **Tab:** Zwischen linkem und rechtem Panel wechseln
+- **Enter:** Verzeichnis öffnen
+- **Backspace:** Zum übergeordneten Verzeichnis wechseln
+- **q / Ctrl+C:** Beenden
+- **c:** Kopieren
+- **r:** Verschieben
+- **d:** Löschen
+- **h:** Versteckte Dateien umschalten
+- **v / F3:** Datei anzeigen
+- **/**: Dateisuche
+
+## Tests und Coverage
+
+```bash
+# Alle Tests ausführen
+make test
+
+# Tests mit Coverage-Report
+make test-coverage
+
+# fs-tests (84.2% Coverage)
+make test-fs
+
+# Integration Tests
+make test-integration
+```
 
 ## Lizenz
 
-Dieses Projekt steht unter der [MIT Lizenz](LICENSE).
+Dieses Projekt ist unter der [MIT Lizenz](LICENSE) lizenziert.

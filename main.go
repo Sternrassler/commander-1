@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,16 +32,23 @@ type panel struct {
 	path           string
 	entries        []fs.FileEntry
 	cursor         int
-	viewportOffset int // Für Scrollbalken
+	viewportOffset int  // Für Scrollbalken
+	showHidden     bool // Versteckte Dateien anzeigen
 }
 
 type model struct {
-	panels      [2]panel
-	activePanel int
-	width       int
-	height      int
-	err         error
-	statusMsg   string // Für Statusmeldungen
+	panels         [2]panel
+	activePanel    int
+	width          int
+	height         int
+	err            error
+	statusMsg      string // Für Statusmeldungen
+	viewportOffset int    // Für Scrollen in Panels
+}
+
+func (m model) Init() tea.Cmd {
+	// Beide Panels initialisieren
+	return tea.Batch(m.readDirCmd(0), m.readDirCmd(1))
 }
 
 func initialModel() model {
@@ -52,13 +60,6 @@ func initialModel() model {
 		},
 		activePanel: 0,
 	}
-}
-
-func (m model) Init() tea.Cmd {
-	return tea.Batch(
-		m.readDirCmd(0),
-		m.readDirCmd(1),
-	)
 }
 
 type readDirMsg struct {
@@ -89,7 +90,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.err = msg.err
 		} else {
 			m.panels[msg.index].entries = msg.entries
+			// Cursor auf gültigen Wert begrenzen
+			if m.panels[msg.index].cursor >= len(m.panels[msg.index].entries) {
+				m.panels[msg.index].cursor = max(0, len(m.panels[msg.index].entries)-1)
+			}
 		}
+
+	case fileOpResultMsg:
+		if msg.err != nil {
+			m.statusMsg = fmt.Sprintf("Fehler bei %s: %v", msg.op, msg.err)
+		} else {
+			m.statusMsg = fmt.Sprintf("%s erfolgreich: %s", map[string]string{"copy": "Kopiert", "move": "Verschoben", "delete": "Gelöscht"}[msg.op], msg.entryName)
+			// Beide Panels neu lesen
+			return m, tea.Batch(m.readDirCmd(0), m.readDirCmd(1))
+		}
+		return m, nil
 
 	case tea.KeyMsg:
 		p := &m.panels[m.activePanel]
@@ -102,15 +117,31 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up":
 			if p.cursor > 0 {
 				p.cursor--
+				// Überspringe versteckte Einträge beim Hochscrollen
+				for p.cursor > 0 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
+					p.cursor--
+				}
 			}
 		case "down":
 			if p.cursor < len(p.entries)-1 {
 				p.cursor++
+				// Überspringe versteckte Einträge beim Runterscrollen
+				for p.cursor < len(p.entries) && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
+					p.cursor++
+				}
 			}
 		case "pgup":
 			p.cursor = max(0, p.cursor-10)
+			// Überspringe versteckte Einträge
+			for p.cursor > 0 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
+				p.cursor--
+			}
 		case "pgdown":
 			p.cursor = min(len(p.entries)-1, p.cursor+10)
+			// Überspringe versteckte Einträge
+			for p.cursor < len(p.entries)-1 && !p.showHidden && strings.HasPrefix(p.entries[p.cursor].Name, ".") {
+				p.cursor++
+			}
 		case "enter":
 			if len(p.entries) > 0 {
 				entry := p.entries[p.cursor]
@@ -132,6 +163,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.handleFileOperation("move")
 		case "d": // Löschen (statt F8)
 			return m, m.handleFileOperation("delete")
+
+			// Versteckte Dateien umschalten
+		case "h":
+			p.showHidden = !p.showHidden
+			m.statusMsg = fmt.Sprintf("Versteckte Dateien: %s", map[bool]string{true: "AN", false: "AUS"}[p.showHidden])
 		}
 	}
 	return m, nil
@@ -153,64 +189,72 @@ func (m *model) handleFileOperation(op string) tea.Cmd {
 
 	switch op {
 	case "copy":
-		if entry.IsDir {
-			if err := fs.CopyDir(srcPath, dstPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Kopieren: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Verzeichnis kopiert: %s -> %s", entry.Name, inactivePanel.path)
-				return m.readDirCmd((m.activePanel + 1) % 2)
-			}
-		} else {
-			if err := fs.Copy(srcPath, dstPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Kopieren: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Kopiert: %s -> %s", entry.Name, inactivePanel.path)
-				return m.readDirCmd((m.activePanel + 1) % 2)
-			}
-		}
-
+		m.statusMsg = fmt.Sprintf("Kopiere: %s -> %s", entry.Name, inactivePanel.path)
 	case "move":
-		if entry.IsDir {
-			if err := fs.Move(srcPath, dstPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Verschieben: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Verzeichnis verschoben: %s -> %s", entry.Name, inactivePanel.path)
-				return tea.Batch(m.readDirCmd(m.activePanel), m.readDirCmd((m.activePanel+1)%2))
-			}
-		} else {
-			if err := fs.Move(srcPath, dstPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Verschieben: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Verschoben: %s -> %s", entry.Name, inactivePanel.path)
-				return tea.Batch(m.readDirCmd(m.activePanel), m.readDirCmd((m.activePanel+1)%2))
-			}
+		m.statusMsg = fmt.Sprintf("Verschiebe: %s -> %s", entry.Name, inactivePanel.path)
+	case "delete":
+		m.statusMsg = fmt.Sprintf("Lösche: %s", entry.Name)
+	}
+
+	// Operation asynchron ausführen
+	return func() tea.Msg {
+		var err error
+		switch op {
+		case "copy":
+			err = copyFile(srcPath, dstPath)
+		case "move":
+			err = os.Rename(srcPath, dstPath)
+		case "delete":
+			err = os.Remove(srcPath)
 		}
 
-	case "delete":
-		if entry.IsDir {
-			if err := fs.DeleteDir(srcPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Löschen: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Verzeichnis gelöscht: %s", entry.Name)
-				return m.readDirCmd(m.activePanel)
-			}
-		} else {
-			if err := fs.Delete(srcPath); err != nil {
-				m.statusMsg = fmt.Sprintf("Fehler beim Löschen: %v", err)
-			} else {
-				m.statusMsg = fmt.Sprintf("Gelöscht: %s", entry.Name)
-				return m.readDirCmd(m.activePanel)
-			}
+		if err != nil {
+			return fileOpResultMsg{op: op, entryName: entry.Name, inactivePanelPath: inactivePanel.path, err: err}
 		}
+
+		return fileOpResultMsg{op: op, entryName: entry.Name, inactivePanelPath: inactivePanel.path, err: nil}
 	}
-	return nil
+}
+
+// fileOpResultMsg wird gesendet, wenn eine Dateioperation abgeschlossen ist
+type fileOpResultMsg struct {
+	op                string
+	entryName         string
+	inactivePanelPath string
+	err               error
+}
+
+func copyFile(src, dst string) error {
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+
+	_, err = io.Copy(dstFile, srcFile)
+	return err
 }
 
 func (m model) renderPanel(index int) string {
-	p := m.panels[index]
+	p := &m.panels[index]
 	style := panelStyle
-	if m.activePanel == index {
+	if index == m.activePanel {
 		style = activePanelStyle
+	}
+
+	// Sichtbare Einträge filtern
+	var visibleEntries []fs.FileEntry
+	for _, entry := range p.entries {
+		if !p.showHidden && strings.HasPrefix(entry.Name, ".") {
+			continue
+		}
+		visibleEntries = append(visibleEntries, entry)
 	}
 
 	// Viewport-Management
@@ -219,19 +263,59 @@ func (m model) renderPanel(index int) string {
 		viewportHeight = style.GetHeight()
 	}
 
-	// Viewport-Offset anpassen, wenn Cursor außerhalb liegt
-	if p.cursor < p.viewportOffset {
-		p.viewportOffset = p.cursor
-	} else if p.cursor >= p.viewportOffset+viewportHeight {
-		p.viewportOffset = p.cursor - viewportHeight + 1
+	// Cursor-Index auf sichtbare Einträge mappen
+	visibleCursor := 0
+	if len(visibleEntries) > 0 {
+		if p.cursor < len(p.entries) {
+			// Finde die sichtbare Position des Cursors
+			hiddenCount := 0
+			for i := 0; i <= p.cursor && i < len(p.entries); i++ {
+				if !p.showHidden && strings.HasPrefix(p.entries[i].Name, ".") {
+					hiddenCount++
+				}
+			}
+			visibleCursor = p.cursor - hiddenCount
+			if visibleCursor < 0 {
+				visibleCursor = 0
+			}
+			if visibleCursor >= len(visibleEntries) {
+				visibleCursor = len(visibleEntries) - 1
+			}
+		}
+	} else {
+		visibleCursor = 0
+		p.viewportOffset = 0
+	}
+
+	// Viewport-Offset anpassen
+	if len(visibleEntries) > 0 {
+		if visibleCursor < p.viewportOffset {
+			p.viewportOffset = visibleCursor
+			if p.viewportOffset < 0 {
+				p.viewportOffset = 0
+			}
+		} else if visibleCursor >= p.viewportOffset+viewportHeight {
+			p.viewportOffset = visibleCursor - viewportHeight + 1
+		}
+		// Viewport-Offset begrenzen
+		if p.viewportOffset > len(visibleEntries)-viewportHeight {
+			p.viewportOffset = len(visibleEntries) - viewportHeight
+		}
+		if p.viewportOffset < 0 {
+			p.viewportOffset = 0
+		}
 	}
 
 	var s strings.Builder
-	s.WriteString(fmt.Sprintf(" Pfad: %s\n", p.path))
+	s.WriteString(fmt.Sprintf(" Pfad: %s", p.path))
+	if p.showHidden {
+		s.WriteString(" (.*)")
+	}
+	s.WriteString("\n")
 
 	// Dateien im Viewport anzeigen
-	for i := p.viewportOffset; i < len(p.entries) && i < p.viewportOffset+viewportHeight; i++ {
-		entry := p.entries[i]
+	for i := p.viewportOffset; i < len(visibleEntries) && i < p.viewportOffset+viewportHeight; i++ {
+		entry := visibleEntries[i]
 		var prefix string
 		if entry.IsDir {
 			prefix = "📁 "
@@ -240,7 +324,7 @@ func (m model) renderPanel(index int) string {
 		}
 
 		line := fmt.Sprintf("%s%s", prefix, entry.Name)
-		if i == p.cursor && m.activePanel == index {
+		if i == visibleCursor && m.activePanel == index {
 			s.WriteString(selectedStyle.Render(line) + "\n")
 		} else {
 			s.WriteString(line + "\n")
@@ -248,9 +332,9 @@ func (m model) renderPanel(index int) string {
 	}
 
 	// Scrollbalken rendern
-	totalEntries := len(p.entries)
+	totalEntries := len(visibleEntries)
 	if totalEntries > viewportHeight {
-		scrollBar := m.renderScrollBar(totalEntries, viewportHeight, p.viewportOffset, p.cursor)
+		scrollBar := m.renderScrollBar(totalEntries, viewportHeight, p.viewportOffset, visibleCursor)
 		s.WriteString(scrollBar)
 	}
 
@@ -292,9 +376,9 @@ func (m model) View() string {
 		status = lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00")).Render(m.statusMsg)
 	}
 
-	help := "\n Tab: Wechseln | ↑/↓: Navigieren | PgUp/PgDn: Scrollen | c: Kopieren | r: Verschieben | d: Löschen | q: Beenden"
+	help := "\n Tab: Wechseln | ↑/↓: Navigieren | PgUp/PgDn: Scrollen | c: Kopieren | r: Verschieben | d: Löschen | h: Versteckte | q: Beenden"
 
-	return lipgloss.JoinVertical(lipgloss.Left, " Commander-1 ", panels, status, help)
+	return lipgloss.JoinVertical(lipgloss.Left, " Min Commander ", panels, status, help)
 }
 
 func main() {

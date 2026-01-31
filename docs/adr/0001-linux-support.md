@@ -1,53 +1,51 @@
-# ADR-0001: Linux-Plattformunterstützung
+# ADR-0001: Linux Platform Support
 
 ## Status
 
-Akzeptiert
+Accepted
 
-## Kontext
+## Context
 
-Das Projekt soll als plattformübergreifende Anwendung entwickelt werden.
-Eine wichtige Entscheidung betrifft die Unterstützung verschiedener
-Betriebssysteme und Architekturen.
+The project is being developed as a cross-platform application.
+An important decision concerns the support for different operating systems and architectures.
 
-## Entscheidung
+## Decision
 
-Das Projekt wird zukünftig die folgenden Plattformen unterstützen:
+The project will support the following platforms in the future:
 
 - **Linux** (x86_64, ARM64)
 - **macOS** (ARM64, Apple Silicon)
 
-### Nicht unterstützte Plattformen
+### Unsupported Platforms
 
-- **Windows**: Das Projekt unterstützt Windows derzeit nicht und ist nicht
-  für die zukünftige Unterstützung geplant.
+- **Windows**: The project does not currently support Windows and is not
+  planned for future support.
 
-## Begründung
+## Rationale
 
-1. **Linux-Fokus**: Als Open-Source-Projekt ist Linux die primäre
-   Zielplattform für Entwicklung und Deployment.
-2. **ARM-Unterstützung**: Mit dem Wachstum von ARM-Servern und
-   Embedded-Geräten ist breite Architekturunterstützung wichtig.
-3. **x86-Unterstützung**: Die Mehrheit der Desktop- und Serverumgebungen
-   läuft noch auf x86, daher ist diese Architektur essenziell.
-4. **Keine Windows-Unterstützung**: Die Entwicklungsressourcen werden auf
-   Linux- und macOS-Kompatibilität konzentriert, um Stabilität und Qualität
-   zu gewährleisten.
+1. **Linux Focus**: As an open-source project, Linux is the primary
+   target platform for development and deployment.
+2. **ARM Support**: With the growth of ARM servers and embedded devices,
+   broad architecture support is important.
+3. **x86 Support**: The majority of desktop and server environments
+   still run on x86, so this architecture is essential.
+4. **No Windows Support**: Development resources are focused on
+   Linux and macOS compatibility to ensure stability and quality.
 
-## Konsequenzen
+## Consequences
 
-### Positiv
+### Positive
 
-- Klare Fokussierung auf Unix-ähnliche Umgebungen (Linux und macOS)
-- Einfacheres Testen und Deployment
-- Bessere Ressourcennutzung für Entwicklung
+- Clear focus on Unix-like environments (Linux and macOS)
+- Simpler testing and deployment
+- Better resource utilization for development
 
-### Negativ
+### Negative
 
-- Keine Möglichkeit für Windows-Benutzer, das Projekt direkt zu nutzen
-- Potentieller Ausschluss eines Teils der potenziellen Nutzerbasis
+- No ability for Windows users to directly use the project
+- Potential exclusion of part of the potential user base
 
-## Referenzen
+## References
 
-- Projektphilosophie: Open Source und Linux-freundlich
-- Ressourcenbeschränkungen erfordern Priorisierung
+- Project philosophy: Open Source and Linux-friendly
+- Resource constraints require prioritization
