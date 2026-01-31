@@ -1,10 +1,10 @@
-.TH MIN-COMMANDER 1 "2026-01-31" "1.2.0" "User Commands"
+.TH MIN-COMMANDER 1 "2026-01-31" "1.2.1" "User Commands"
 .SH NAME
 min-commander \- moderner, tastaturgesteuerter Terminal-Dateimanager
 .SH SYNOPSIS
 .B min-commander
 .SH DESCRIPTION
-Min Commander ist ein moderner, tastaturgesteuerter Terminal-Dateimanager als Alternative zum macOS Finder, inspiriert vom klassischen Norton Commander.
+Min Commander ist ein einfacher, tastaturgesteuerter Terminal-Dateimanager als Alternative zum macOS Finder, inspiriert vom klassischen Norton Commander.
 .PP
 Das Programm bietet eine Dual-Panel-Ansicht für effiziente Dateiverwaltung direkt im Terminal.
 .SH USAGE
@@ -20,19 +20,28 @@ Zwischen den Panels wechseln
 .B ↑/↓
 Navigation in der Dateiliste
 .TP
+.B PgUp/PgDn
+10 Einträge nach oben/unten scrollen
+.TP
 .B Enter
 Verzeichnis öffnen
 .TP
-.B F5
+.B Backspace
+Zum übergeordneten Verzeichnis wechseln
+.TP
+.B c
 Datei/Verzeichnis kopieren
 .TP
-.B F6
+.B r
 Datei/Verzeichnis verschieben
 .TP
-.B F8
+.B d
 Datei/Verzeichnis löschen
 .TP
-.B q
+.B h
+Versteckte Dateien ein-/ausblenden
+.TP
+.B q, Ctrl+C
 Programm beenden
 .SH FILES
 .TP

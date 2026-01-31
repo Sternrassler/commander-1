@@ -4,6 +4,11 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 
 Das Format basiert auf [Conventional Commits](https://www.conventionalcommits.org/) und verwendet [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-01-31
+
+### Fixed
+- Korrigierte Tastenkürzel in der Man-Page entsprechend der tatsächlichen Implementierung
+
 ## [1.2.0] - 2026-01-31
 
 ### Added
