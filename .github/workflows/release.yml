@@ -118,11 +118,45 @@ jobs:
           GOOS=darwin GOARCH=arm64 go build -o commander-1-darwin-arm64 .
           gzip -k commander-1-darwin-arm64
 
+      - name: Install nfpm
+        uses: goreleaser/nfpm-action@v1
+        with:
+          version: latest
+
+      - name: Build .deb package for AMD64
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+          ARCH: amd64
+        run: |
+          cp commander-1-linux-amd64 min-commander-linux-amd64
+          chmod +x min-commander-linux-amd64
+          nfpm package --packager deb --target min-commander_${VERSION}_amd64.deb
+
+      - name: Build .deb package for ARM64
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+          ARCH: arm64
+        run: |
+          cp commander-1-linux-arm64 min-commander-linux-arm64
+          chmod +x min-commander-linux-arm64
+          nfpm package --packager deb --target min-commander_${VERSION}_arm64.deb
+
+      - name: Generate Checksums
+        run: |
+          sha256sum \
+            commander-1-linux-amd64.gz \
+            commander-1-linux-arm64.gz \
+            commander-1-darwin-amd64.gz \
+            commander-1-darwin-arm64.gz \
+            min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb \
+            min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb \
+            > checksums.txt
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.version.outputs.RELEASE_NAME }}
-          tag_name: ${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
@@ -131,14 +165,6 @@ jobs:
             commander-1-linux-arm64.gz
             commander-1-darwin-amd64.gz
             commander-1-darwin-arm64.gz
-
-      - name: Generate Checksums
-        run: |
-          sha256sum commander-1-linux-amd64.gz commander-1-linux-arm64.gz commander-1-darwin-amd64.gz commander-1-darwin-arm64.gz > checksums.txt
-
-      - name: Upload Checksums
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ steps.version.outputs.RELEASE_NAME }}
-          tag_name: ${{ steps.version.outputs.VERSION }}
-          files: checksums.txt
+            min-commander_${{ steps.version.outputs.VERSION }}_amd64.deb
+            min-commander_${{ steps.version.outputs.VERSION }}_arm64.deb
+            checksums.txt

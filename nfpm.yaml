@@ -1,0 +1,13 @@
+name: "min-commander"
+arch: "${ARCH}"
+platform: "linux"
+version: "${VERSION}"
+section: "utils"
+priority: "optional"
+maintainer: "Sternrassler"
+description: "Ein moderner, tastaturgesteuerter Terminal-Dateimanager als Alternative zum macOS Finder, inspiriert vom klassischen Norton Commander."
+homepage: "https://github.com/sternrassler/commander-1"
+license: "MIT"
+contents:
+  - src: "min-commander-linux-${ARCH}"
+    dst: "/usr/bin/min-commander"

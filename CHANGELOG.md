@@ -4,6 +4,20 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 
 Das Format basiert auf [Conventional Commits](https://www.conventionalcommits.org/) und verwendet [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-01-31
+
+### Added
+- Debian package (.deb) support for Linux amd64 and arm64 architectures
+- nfpm configuration for package generation
+- Automated .deb package building in release workflow
+
+### Changed
+- Enhanced release workflow to include .deb packages in GitHub releases
+- Improved checksums generation to include all release artifacts
+
+### Fixed
+- Corrected tag_name reference in release workflow to use proper Git tag format
+
 ## [1.0.0] - 2026-01-31
 
 ### Changed
