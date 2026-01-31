@@ -9,5 +9,5 @@ description: "Ein moderner, tastaturgesteuerter Terminal-Dateimanager als Altern
 homepage: "https://github.com/sternrassler/commander-1"
 license: "MIT"
 contents:
-  - src: "min-commander-linux-${ARCH}"
+  - src: "min-commander-linux-amd64"
     dst: "/usr/bin/min-commander"
