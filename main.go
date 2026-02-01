@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -201,11 +200,19 @@ func (m *model) handleFileOperation(op string) tea.Cmd {
 		var err error
 		switch op {
 		case "copy":
-			err = copyFile(srcPath, dstPath)
+			if entry.IsDir {
+				err = fs.CopyDir(srcPath, dstPath)
+			} else {
+				err = fs.Copy(srcPath, dstPath)
+			}
 		case "move":
-			err = os.Rename(srcPath, dstPath)
+			err = fs.Move(srcPath, dstPath)
 		case "delete":
-			err = os.Remove(srcPath)
+			if entry.IsDir {
+				err = fs.DeleteDir(srcPath)
+			} else {
+				err = fs.Delete(srcPath)
+			}
 		}
 
 		if err != nil {
@@ -222,23 +229,6 @@ type fileOpResultMsg struct {
 	entryName         string
 	inactivePanelPath string
 	err               error
-}
-
-func copyFile(src, dst string) error {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer srcFile.Close()
-
-	dstFile, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer dstFile.Close()
-
-	_, err = io.Copy(dstFile, srcFile)
-	return err
 }
 
 func (m model) renderPanel(index int) string {

@@ -20,10 +20,10 @@ func TestCopyFile(t *testing.T) {
 		t.Fatalf("Failed to create source file: %v", err)
 	}
 
-	// Copy mit copyFile Funktion
+	// Copy mit fs.Copy Funktion
 	dstPath := filepath.Join(tmpDir, "destination.txt")
-	if err := copyFile(srcPath, dstPath); err != nil {
-		t.Fatalf("copyFile failed: %v", err)
+	if err := fs.Copy(srcPath, dstPath); err != nil {
+		t.Fatalf("fs.Copy failed: %v", err)
 	}
 
 	// Check that die Datei kopiert wurde
@@ -42,7 +42,7 @@ func TestCopyFile_SourceNotExists(t *testing.T) {
 	srcPath := filepath.Join(tmpDir, "nonexistent.txt")
 	dstPath := filepath.Join(tmpDir, "destination.txt")
 
-	err := copyFile(srcPath, dstPath)
+	err := fs.Copy(srcPath, dstPath)
 	if err == nil {
 		t.Error("Expected error when source does not exist")
 	}
@@ -510,8 +510,8 @@ func TestCopyFileWithDifferentSizes(t *testing.T) {
 				t.Fatalf("Failed to create source file: %v", err)
 			}
 
-			if err := copyFile(srcPath, dstPath); err != nil {
-				t.Fatalf("copyFile failed: %v", err)
+			if err := fs.Copy(srcPath, dstPath); err != nil {
+				t.Fatalf("fs.Copy failed: %v", err)
 			}
 
 			dstContent, err := os.ReadFile(dstPath)

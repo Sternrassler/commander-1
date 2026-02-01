@@ -11,9 +11,13 @@ alternative to macOS Finder, inspired by the classic Norton Commander.
 
 ### File Operations
 
-- **c**: Copy file/directory
-- **r**: Move file/directory
-- **d**: Delete file/directory
+- **c**: Copy file/directory (recursive for directories)
+- **r**: Move file/directory (recursive for directories, works across partitions)
+- **d**: Delete file/directory (recursive for directories)
+
+All file operations automatically detect whether the selected item is a file or
+directory and handle it appropriately. Directories are processed recursively
+with all their contents.
 
 ### Navigation
 

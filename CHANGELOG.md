@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-02-01
+
+### Added
+
+- **Recursive File Operations**: Full support for recursive operations on
+  directories
+  - Copy directories recursively with all subdirectories and files
+  - Move directories recursively across partitions
+  - Delete directories recursively with all contents
+
+### Changed
+
+- **File Operations**: Refactored to use fs package functions consistently
+  - `fs.CopyDir()` for recursive directory copying
+  - `fs.DeleteDir()` for recursive directory deletion
+  - `fs.Move()` for moving files and directories (with cross-partition support)
+- **Code Quality**: Removed duplicate `copyFile()` function in favor of
+  `fs.Copy()`
+- **Tests**: Updated all tests to use fs package functions
+
+### Fixed
+
+- **Directory Deletion**: Fixed "directory not empty" error when deleting
+  directories
+- **Directory Operations**: All file operations now properly handle both files
+  and directories
+
 ## [2.0.0] - 2026-01-31
 
 ### Changed
