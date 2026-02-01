@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.1] - 2026-02-01
+
+### Fixed
+
+- **CopyDir**: Allow copying into existing directories
+  - Removed restriction that prevented copying into existing destination
+    directories
+  - Now only checks for file conflicts, not directory existence
+  - Enables copying directories into existing target locations (e.g., copying
+    `.kilocode` into an existing project directory)
+
+### Changed
+
+- **Tests**: Updated `TestCopyDir_DestinationExists` to reflect new behavior
+
 ## [2.1.0] - 2026-02-01
 
 ### Added

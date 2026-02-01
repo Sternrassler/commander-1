@@ -94,11 +94,7 @@ func CopyDir(src, dst string) error {
 		return fmt.Errorf("src is not a directory: %s", src)
 	}
 
-	_, err = os.Stat(dst)
-	if err == nil {
-		return fmt.Errorf("destination already exists: %s", dst)
-	}
-
+	// Create destination directory if it doesn't exist
 	err = os.MkdirAll(dst, srcInfo.Mode())
 	if err != nil {
 		return err
@@ -119,6 +115,10 @@ func CopyDir(src, dst string) error {
 				return err
 			}
 		} else {
+			// Check if destination file already exists
+			if _, err := os.Stat(dstPath); err == nil {
+				return fmt.Errorf("destination file already exists: %s", dstPath)
+			}
 			err = Copy(srcPath, dstPath)
 			if err != nil {
 				return err

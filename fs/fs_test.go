@@ -272,21 +272,30 @@ func TestCopyDir_NotADirectory(t *testing.T) {
 func TestCopyDir_DestinationExists(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create Quellverzeichnis
+	// Create Quellverzeichnis mit Datei
 	srcDir := filepath.Join(tmpDir, "source")
 	if err := os.Mkdir(srcDir, 0755); err != nil {
 		t.Fatalf("Failed to create source directory: %v", err)
 	}
+	if err := os.WriteFile(filepath.Join(srcDir, "file.txt"), []byte("content"), 0644); err != nil {
+		t.Fatalf("Failed to create file: %v", err)
+	}
 
-	// Create Zielverzeichnis bereits
+	// Create Zielverzeichnis bereits (leer)
 	dstDir := filepath.Join(tmpDir, "destination")
 	if err := os.Mkdir(dstDir, 0755); err != nil {
 		t.Fatalf("Failed to create destination directory: %v", err)
 	}
 
+	// Should succeed - copying into existing directory is allowed
 	err := CopyDir(srcDir, dstDir)
-	if err == nil {
-		t.Error("Expected error when destination already exists")
+	if err != nil {
+		t.Errorf("CopyDir should succeed when destination directory exists but is empty: %v", err)
+	}
+
+	// Check that file was copied
+	if _, err := os.Stat(filepath.Join(dstDir, "file.txt")); os.IsNotExist(err) {
+		t.Error("File should exist in destination directory")
 	}
 }
 
