@@ -46,7 +46,8 @@ with all their contents.
 ### Homebrew (macOS)
 
 ```bash
-brew install sternrassler/tap/min-commander
+brew tap sternrassler/homebrew-tap
+brew install min-commander
 ```
 
 ### Direct Download
@@ -56,20 +57,27 @@ Download the latest version from the [Release page](https://github.com/sternrass
 #### macOS
 
 ```bash
-# macOS ARM64 (Apple Silicon M1/M2/M3)
+# macOS ARM64 (Apple Silicon M1/M2/M3) - PKG Installer
+curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
+min-commander_VERSION_darwin-arm64.pkg -o min-commander.pkg
+sudo installer -pkg min-commander.pkg -target /
+
+# macOS ARM64 (Apple Silicon M1/M2/M3) - Binary
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
 min-commander-darwin-arm64.gz -o min-commander.gz
 gunzip min-commander.gz
 chmod +x min-commander
 sudo mv min-commander /usr/local/bin/
 
-# macOS x86_64 (Intel)
+# macOS x86_64 (Intel) - Binary
 curl -L https://github.com/sternrassler/commander-1/releases/latest/download/\
 min-commander-darwin-amd64.gz -o min-commander.gz
 gunzip min-commander.gz
 chmod +x min-commander
 sudo mv min-commander /usr/local/bin/
 ```
+
+**Note for PKG installer:** Replace `VERSION` with the current version number (e.g. `2.1.2`).
 
 #### Linux
 
@@ -99,7 +107,7 @@ min-commander_VERSION_arm64.deb -o min-commander.deb
 sudo dpkg -i min-commander.deb
 ```
 
-**Hinweis für DEB-Pakete:** Ersetze `VERSION` mit der aktuellen Versionsnummer (z.B. `2.0.1`).
+**Note for DEB packages:** Replace `VERSION` with the current version number (e.g. `2.1.2`).
 
 ### Build from Source
 

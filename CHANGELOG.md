@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.2] - 2026-03-01
+
+### Added
+
+- **macOS PKG Installer**: Native `.pkg` installer for macOS ARM64 (Apple
+  Silicon), built natively on macOS runners via `pkgbuild`
+- **Homebrew Tap**: Automated formula updates in `sternrassler/homebrew-tap`
+  after each release via `dawidd6/action-homebrew-bump-formula`
+- **CI/CD**: Two new GitHub Actions jobs – `release-macos-pkg` (macOS runner)
+  and `homebrew-update` (auto-bumps formula version and SHA256)
+
 ## [2.1.1] - 2026-02-01
 
 ### Fixed

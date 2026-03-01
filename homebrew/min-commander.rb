@@ -1,8 +1,8 @@
 class MinCommander < Formula
   desc "Keyboard-driven terminal file manager inspired by Norton Commander"
   homepage "https://github.com/sternrassler/commander-1"
-  url "https://github.com/sternrassler/commander-1/archive/refs/tags/v2.1.1.tar.gz"
-  sha256 "f09bddfceb46f12beb6b526c90cca392ea84ae6dfd76eeb7430000d80e49e5b8"
+  url "https://github.com/sternrassler/commander-1/archive/refs/tags/v2.1.2.tar.gz"
+  sha256 "31b001586e8182ac2b899169bdb5405c41e1b5ec42b829ac1d79ac99d39312a7"
   license "MIT"
   depends_on "go" => :build
 
