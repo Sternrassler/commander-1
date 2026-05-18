@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.3] - 2026-05-18
+
+### Added
+
+- `CLAUDE.md` as the canonical bootstrap for Claude Code instances working in
+  this repository. Covers the two-package architecture (`main.go` + `fs/`),
+  the `tea.Cmd` invariant for async filesystem work, common `make` targets,
+  the release flow via `VERSION` + `nfpm.yaml`, and branching/test conventions.
+
+### Removed
+
+- `.kilocode/rules.md` — older tool-specific rule file that no longer reflected
+  the codebase (referenced `ui/` and `config/` packages that never materialized).
+
 ## [2.1.2] - 2026-03-01
 
 ### Added
