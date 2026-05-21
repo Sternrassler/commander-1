@@ -15,3 +15,6 @@ coverage*.out
 # Build artifacts
 min-commander-*
 !min-commander-*.deb
+
+# Editor / tool state
+.claude/

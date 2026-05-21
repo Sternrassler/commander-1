@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.4] - 2026-05-21
+
+### Changed
+
+- `.gitignore` now excludes the `.claude/` directory, which holds local
+  Claude Code tool state (`settings.local.json`) and should not be tracked.
+
 ## [2.1.3] - 2026-05-18
 
 ### Added
