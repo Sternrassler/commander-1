@@ -42,15 +42,18 @@ make test-integration      # only TestIntegration* in repo root
 make lint                  # lint-go + lint-docs
 make install-lint          # bootstrap golangci-lint + markdownlint
 make all                   # cross-compile all four target binaries
-make package-linux-amd64   # build .deb via nfpm (reads VERSION file)
+make package-linux-amd64   # build .deb via nfpm (version from git tag / CHANGELOG)
 ```
 
 Run a single Go test: `go test -v -run TestName ./fs` (or `.` for the
 root package).
 
-Releases: bump the `VERSION` file (plain text, e.g. `2.1.3`); `nfpm.yaml`
-reads it via `$VERSION`. Update `CHANGELOG.md` following Keep-a-Changelog
-style.
+Releases: SemVer is sourced from `CHANGELOG.md` + the git tag (`vX.Y.Z`) —
+there is no standalone `VERSION` file. To release, add the new `## [X.Y.Z]`
+entry to `CHANGELOG.md` (Keep-a-Changelog style) and push the matching
+`vX.Y.Z` tag; the release workflow derives the version from that tag and
+passes it to `nfpm.yaml` via the `$VERSION` env var. Locally, `make` derives
+the same value from the latest tag (falling back to the top CHANGELOG entry).
 
 ## Conventions worth knowing
 

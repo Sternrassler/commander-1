@@ -2,6 +2,14 @@
 
 GOPATH_BIN := $(shell go env GOPATH)/bin
 
+# SemVer single source of truth: git tag (vX.Y.Z), falling back to the top
+# CHANGELOG.md entry. There is no standalone VERSION file. CI derives the same
+# value from the tag that triggers the release (GITHUB_REF_NAME).
+VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || true)
+ifeq ($(strip $(VERSION)),)
+VERSION := $(shell grep -m1 -oE '## \[[0-9]+\.[0-9]+\.[0-9]+\]' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+endif
+
 # Standard Build (alle Plattformen)
 all: linux-amd64 linux-arm64 darwin-amd64 darwin-arm64
 
@@ -92,7 +100,7 @@ lint: lint-go lint-docs
 package-linux-amd64: linux-amd64
 	@echo "Creating Linux AMD64 DEB package..."
 	@command -v nfpm >/dev/null 2>&1 || (echo "✗ nfpm not found. Install with: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest" && exit 1)
-	VERSION=$$(cat VERSION) nfpm pkg --packager deb --config nfpm.yaml --target min-commander-linux-amd64.deb
+	VERSION=$(VERSION) nfpm pkg --packager deb --config nfpm.yaml --target min-commander-linux-amd64.deb
 	@echo "✓ Linux AMD64 DEB package created: min-commander-linux-amd64.deb"
 
 # macOS ARM64 Installation (für M1/M2/M3 Macs)

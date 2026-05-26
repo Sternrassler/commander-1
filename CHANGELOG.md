@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/)
 and uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Removed
+
+- Standalone `VERSION` file. SemVer is now sourced solely from `CHANGELOG.md`
+  plus the git tag (`vX.Y.Z`), removing a second, driftable version location.
+
+### Changed
+
+- Release pipeline and local `make` now derive the package version from the
+  git tag (the tag that triggers the release in CI; the latest tag locally,
+  falling back to the top `## [X.Y.Z]` CHANGELOG entry) instead of reading the
+  removed `VERSION` file. `nfpm.yaml` continues to read `$VERSION` from the
+  environment, so built `.deb`/`.pkg` artifacts keep identical version
+  semantics.
+
 ## [2.1.4] - 2026-05-21
 
 ### Changed
