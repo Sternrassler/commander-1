@@ -29,6 +29,8 @@ Two-package layout:
 - `fs/fs.go` — pure file-system operations (`ReadDir`, `Copy`, `Move`,
   `Delete`, recursive variants). No TUI dependencies; this is the
   package with the 80%+ coverage target.
+- `fs/fs_test.go` — the table-driven tests backing that ≥80% fs
+  coverage target (verify via `make test-fs`).
 - `main_test.go` — unit tests for the model/update logic.
 - `integration_test.go` — end-to-end workflows (run with
   `make test-integration`, filter `TestIntegration`).
@@ -36,12 +38,15 @@ Two-package layout:
 ## Common commands
 
 ```bash
+go run .                   # launch the file manager locally
 make test                  # all tests
 make test-fs               # fs package only, with coverage (target ≥80%)
+make test-coverage         # full coverage report across all packages → coverage.out
 make test-integration      # only TestIntegration* in repo root
 make lint                  # lint-go + lint-docs
 make install-lint          # bootstrap golangci-lint + markdownlint
 make all                   # cross-compile all four target binaries
+make install-darwin-arm64  # build + install darwin/arm64 binary to /usr/local/bin/min-commander (uses sudo)
 make package-linux-amd64   # build .deb via nfpm (version from git tag / CHANGELOG)
 ```
 
