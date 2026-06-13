@@ -60,6 +60,14 @@ entry to `CHANGELOG.md` (Keep-a-Changelog style) and push the matching
 passes it to `nfpm.yaml` via the `$VERSION` env var. Locally, `make` derives
 the same value from the latest tag (falling back to the top CHANGELOG entry).
 
+The `.deb` built from `nfpm.yaml` also bundles the man page
+`docs/min-commander.1` (declared under `contents:`). A Homebrew formula lives
+at `homebrew/min-commander.rb` for the macOS distribution path.
+
+Note: `nfpm.yaml`'s `homepage`/`maintainer` point at the GitHub org
+`sternrassler/commander-1`, while the Go module path is
+`github.com/karstenflache/commander-1` — this is intentional, not a typo.
+
 ## Conventions worth knowing
 
 - **Commit messages:** Conventional Commits (`feat`, `fix`, `docs`,
